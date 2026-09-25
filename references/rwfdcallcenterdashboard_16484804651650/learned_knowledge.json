@@ -1,0 +1,1296 @@
+{
+  "source_name": "RWFDCallCenterDashboard_16484804651650",
+  "source_type": "Tableau Public",
+  "dashboards": [
+    "Agent Performance ",
+    "Client Detail",
+    "Overview"
+  ],
+  "dimensions": "1600x900",
+  "palette": {
+    "canvas_bg": "#FFFFFF",
+    "card_bg": "#FFFFFF",
+    "card_border": "#E2E8F0",
+    "text_primary": "#000000",
+    "text_secondary": "#475569",
+    "accent_primary": "#4C8CAA",
+    "positive_color": "#10B981",
+    "negative_color": "#FF819F",
+    "font_family": "Arial"
+  },
+  "theme_registered": "learned-rwfdcallcenterdashbo",
+  "calculations_count": 778,
+  "advanced_calculations": [
+    {
+      "name": "@Sort Top Agents (copy)",
+      "formula": "Case [Parameters].[Parameter 4]\r\nwhen \"Average Handle Time\" then [LinPack_843255270213201173]\r\nwhen \"First Contact Resolution\" then [LinPack_573745926832137691]\r\nwhen \"Customer Satisfaction Score\" then [LinPack_763442497024700758]\r\nend",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time  YTD  (Current Year) (for trends) (copy)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_686628653575237958])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "AHT (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : ZN([LinPack_843255270213201173])} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "CSAT (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : ZN([LinPack_763442497024700758])} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Agent Class Description",
+      "formula": "CASE [Calculation_1325184191314460672]\r\nWHEN [Calculation_230246532606050306]          THEN \"Top performers in the class. They perform well in all areas and pull the team up.\"\r\nWHEN [Top Right Class (copy)_230246532606287875]       THEN \"Quite efficient, these agents lack the communication skills that would increase customer satisfaction.\"\r\nWHEN [Top Right Class (copy)_230246532606656516]           THEN \"Good at communication, the agents in this group have difficulty effectively resolving customer problems.\"\r\nWHEN [Bottom Right Class (copy)_230246532607000581]        THEN  \"Underperforming in technical and communication areas, this group is dragging the team down.\"   \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Agent Class Advice",
+      "formula": "CASE [Calculation_1325184191314460672]\r\nWHEN [Calculation_230246532606050306]          THEN \"Reward these elements, they can be a model for the other agents.\"\r\nWHEN [Top Right Class (copy)_230246532606287875]       THEN \"Supervise these agents very closely and try to improve their behavior, especially through training.\"\r\nWHEN [Top Right Class (copy)_230246532606656516]           THEN \"Provide these agents additional trainings to improve their technical skills.\"\r\nWHEN [Bottom Right Class (copy)_230246532607000581]        THEN \"These agents need to improve their skills in both areas, technical and communication. Train them quickly.\"   \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls (Avg)",
+      "formula": "AVG({INCLUDE DATETRUNC('day',[Call Date Time]) : [LinPack_607350940581116037]})",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max Total Answered Calls ",
+      "formula": "IF [LinPack_292867886194385168] = WINDOW_MAX([LinPack_292867886194385168]) THEN [LinPack_292867886194385168]\r\nELSEIF [LinPack_292867886194385168] = WINDOW_MIN([LinPack_292867886194385168]) THEN [LinPack_292867886194385168]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max Total Incoming Calls",
+      "formula": "IF [LinPack_643653553743082426] = WINDOW_MAX([LinPack_643653553743082426]) THEN [LinPack_643653553743082426]\r\nELSEIF [LinPack_643653553743082426] = WINDOW_MIN([LinPack_643653553743082426]) THEN [LinPack_643653553743082426]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "@Sort Top Agents",
+      "formula": "Case [Parameters].[Parameter 4]\r\nwhen \"Average Handle Time\" then [LinPack_260000649550622233]\r\nwhen \"First Contact Resolution\" then [LinPack_496467549615515995]\r\nwhen \"Total Incoming Calls\" then [LinPack_607350940581116037]\r\nend",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Agent First Date",
+      "formula": "{FIXED [Agent] : MIN( IF [Calculation_1647754575248490496] THEN [Call Date Time] END)}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Agent Perf Metric",
+      "formula": "CASE [Parameters].[Parameter 5]\r\nWHEN 1 THEN [LinPack_573745926832137691]\r\nWHEN 3 THEN [LinPack_843255270213201173]\r\nWHEN 2 THEN [LinPack_743705828021242243]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "% Change - Answered Calls Per Agent",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135]\r\nWHEN \"CM_vs_PM\" THEN [LinPack_394383523850453094]\r\nELSE [LinPack_514117216804285514]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Max Calls / Week / Day",
+      "formula": "IF [LinPack_832076401428736892] = WINDOW_MAX([LinPack_832076401428736892]) THEN \"MAX\" ELSE \"REG\" END",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Sort Agent - For Performance Dashboard",
+      "formula": "CASE [Parameters].[Parameter 7]\r\nWHEN \"First Contact Resolution\" THEN [LinPack_579369264240449034]\r\nWHEN \"Average Handle Time\" THEN [LinPack_260000649550622233]\r\nWHEN \"CSAT Score\" THEN [LinPack_735351034770573233]\r\nWHEN \"Total Incoming Calls\" THEN [LinPack_002119134309336988]\r\nWHEN \"Average Wait Till Answer\" THEN [LinPack_081936442129680740]\r\nWHEN \"Average Wait Till Abandon\" THEN [LinPack_734804389318521929]\r\nWHEN \"Total Answered Calls\" THEN [LinPack_078279864120629538]\r\nWHEN \"Average Talk Time\" THEN [LinPack_757529712480138015]\r\nWHEN \"Abandoned Call %\" THEN [LinPack_577310852777993498]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls (for selected Agent) Perf. - Value vs Reference (shape)",
+      "formula": "case sign([Total Abandoned Calls (for selected Agent) Perf. - Value (copy)_1059753349250473991])\r\nWhen 1 then\r\n         // TARGET MODE\r\n         If [Parameters].[LinPack_162642609168911135]=\"ACT_vs_TGT\" or [Parameters].[LinPack_162642609168911135]=\"YTDACT_vs_YTDTGT\" then \"\u263b\" //[note pour DLL: \"TARGET-REACHED\" when ON or OFF, else if REVERSE \"TARGET-NOT-REACHED\"]  \r\n         // PERIOD COMPARISON\r\n         else \"\u25b2\"\r\n         end\r\nWhen 0 then\r\n         // TARGET MODE\r\n         If [Parameters].[LinPack_162642609168911135]=\"ACT_vs_TGT\" or [Parameters].[LinPack_162642609168911135]=\"YTDACT_vs_YTDTGT\" then \"\u263b\" //[note pour DLL: \"TARGET-REACHED\" when ON or OFF, else if REVERSE \"TARGET-NOT-REACHED\"]  \r\n         // PERIOD COMPARISON\r\n         else \"\u25ba\"\r\n         end\r\nWhen -1 then\r\n         // TARGET MODE\r\n         If [Parameters].[LinPack_162642609168911135]=\"ACT_vs_TGT\" or [Parameters].[LinPack_162642609168911135]=\"YTDACT_vs_YTDTGT\" then \"\u25c6\" //[note pour DLL: \"TARGET-NOT-REACHED\" when ON or OFF, else if REVERSE \"TARGET-REACHED\"]  \r\n         // PERIOD COMPARISON\r\n         else \"\u25bc\"\r\n         end\r\nElse \"-\"\r\nend",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_467641348621202720]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls (Daily) Perf. -  Value (copy)",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_147972099442787213] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_147972099442787213] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_147972099442787213] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_773892209512979554] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_773892209512979554]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Wait Time Until Abandon (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] :[LinPack_505404960165432913]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls per agent (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] :[LinPack_307854597376727032]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls % (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] :[LinPack_335827055104187996]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] :[LinPack_292867886194385168]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : ZN([LinPack_225784116210437880])} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls per agent (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_002119134309336988]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Wait Time Until Abandon (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_734804389318521929]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Is Selected Agent Group Flag",
+      "formula": "[{??Dim7??}]=\r\n{fixed: max(if [Agent]=[Parameters].[Parameter 1] then [{??Dim7??}] end)}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Days Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_507331616780619351]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls per Agent Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_079682776728445444] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_079682776728445444] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_079682776728445444] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_015804378897317464] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_015804378897317464]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Value vs Reference %",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_867955241471306106]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_379207750745827602]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_502481954262516697]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_656648181213883653]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_514117216804285514]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_294635018852738843]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_979603194902141250]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_994328221008810346]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_420430213825488411]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_894802294419860453]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_047597523338170790]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_753519179724150802]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_546634293311283798]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_729825317411086167]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_344009515689627455]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_799874450108163211]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_983801937977441936]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_597071743215939346]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Days Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_051659465857380563] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_051659465857380563] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_051659465857380563] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_355857310672577948] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_355857310672577948]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "CSAT - Customer Satisfaction Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_196053506085052138]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Filter: Performance KPI",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\"  THEN IF [LinPack_393282580024162863] = 0 OR [LinPack_393282580024162863] = -1 THEN \"Y\" ELSE \"N\" END \r\nWHEN \"CM_vs_PY\"  THEN IF [LinPack_393282580024162863] = 0 OR [LinPack_393282580024162863] = -12 THEN \"Y\" ELSE \"N\" END \r\nWHEN \"ACT_vs_TGT\"  THEN IF [LinPack_393282580024162863] = 0 THEN \"Y\" ELSE \"N\" END \r\nWHEN \"CYTD_vs_PYTD\"  THEN IF ([LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] OR [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839]-1) AND [LinPack_133017178160914243] <= [Parameters].[LinPack_602727554575955041] THEN \"Y\" ELSE \"N\" END \r\nWHEN \"YTDACT_vs_YTDTGT\"  THEN IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] AND [LinPack_133017178160914243] <= [Parameters].[LinPack_602727554575955041] THEN \"Y\" ELSE \"N\" END \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Growth from Previous Period %",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_264786405798288297]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_398685697368415707]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_403628585228045313]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_936728173977444167]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_394383523850453094]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_903866393265267399]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_623978461278583004]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_381985502642079493]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_875258586352216778]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_315750146454285694]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_611839490049582247]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_700458665455159484]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_705176021788725752]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_786171563880153963]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_550588710726311055]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_709052424199442707]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_298067891279266551]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_668018188523411840]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_457373348215762126] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_593588006721492009] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_911497507659129427] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls % Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_864328045918762181]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Period: Month Name of Current Month",
+      "formula": "CASE [Parameters].[LinPack_602727554575955041] \r\nWHEN 1 THEN \"Jan\" \r\nWHEN 2 THEN \"Feb\" \r\nWHEN 3 THEN \"Mar\" \r\nWHEN 4 THEN \"Apr\" \r\nWHEN 5 THEN \"May\" \r\nWHEN 6 THEN \"Jun\" \r\nWHEN 7 THEN \"Jul\" \r\nWHEN 8 THEN \"Aug\" \r\nWHEN 9 THEN \"Sep\" \r\nWHEN 10 THEN \"Oct\" \r\nWHEN 11 THEN \"Nov\" \r\nWHEN 12 THEN \"Dec\" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. -  Value - Display Value",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_577310852777993498]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_485594604522964148]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_260000649550622233]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_827947962302995375]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_078279864120629538]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_757529712480138015]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_734804389318521929]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_081936442129680740]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_735351034770573233]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_496467549615515995]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_579369264240449034]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_832076401428736892]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_002119134309336988]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_478169498516735734]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_643538986245403047]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_379496261768073466]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_467641348621202720]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_607350940581116037]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls per Agent Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_782483919410537132] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_782483919410537132] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_782483919410537132] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_528865025418685930] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_528865025418685930]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Answer Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_057844589659546126] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_057844589659546126] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_057844589659546126] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_744410561738711801] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_744410561738711801]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_SUM([LinPack_326117024433215673])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Inquiries Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_944965512313676811]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Value vs Reference",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_125436670748282766]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_316186303192733365]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_752446998593850135]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_864328045918762181]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_295713812781750679]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_132874177822996561]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_036382858358103168]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_630896387260247844]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_196053506085052138]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_659372740899934080]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_852776583723808233]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_564318151870196494]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_459792370854968508]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_699243547407035887]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_944965512313676811]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_564460243196420958]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_786304050298609709]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_000664932470230911]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Agents Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_699243547407035887]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_SUM([LinPack_506906063695558162])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_659372740899934080]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. -  Value (Share of total)",
+      "formula": "IF ROUND( WINDOW_SUM([LinPack_776807214892759825] / TOTAL([LinPack_776807214892759825]) ),2) = 1 THEN [LinPack_776807214892759825] / TOTAL( [LinPack_776807214892759825] ) END",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Dimension 2",
+      "formula": "CASE [Parameters].[LinPack_148105152765214545] \r\nWHEN \"Abandon Flag\" THEN [Abandon Flag] \r\nWHEN \"Agent\" THEN [Agent] \r\nWHEN \"Call Reason\" THEN [Call Reason] \r\nWHEN \"Customer\" THEN [Customer] \r\nWHEN \"First Contact Resolution Flag\" THEN [First Contact Resolution Flag] \r\nWHEN \"Inquiry #\" THEN [Inquiry #] \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Period: Period of Reference (for trends)",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\"  THEN NULL \r\nWHEN \"CM_vs_PY\"  THEN STR([Parameters].[LinPack_878445100977946839]-1) \r\nWHEN \"ACT_vs_TGT\"  THEN \"Target \" + STR([Parameters].[LinPack_878445100977946839]) \r\nWHEN \"CYTD_vs_PYTD\"  THEN \"YTD \" + STR([Parameters].[LinPack_878445100977946839]-1) \r\nWHEN \"YTDACT_vs_YTDTGT\"  THEN \"YTD \" + STR([Parameters].[LinPack_878445100977946839]) + \" Target\" \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Agents Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_381510273725838290] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_369334638877244567] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_903307275725169301] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Days  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_654420801199112581]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] THEN [Call Date Time] END)} THEN [LinPack_654420801199112581] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Total Answered Calls  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_SUM([LinPack_971187656540890206])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Value vs Reference - Display Prefix",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN \"\" + IIF(SIGN([LinPack_125436670748282766]) = 1,\"+\",\"\") \r\nWHEN \"Abandoned Calls per Agent\" THEN \"\u2718 \" + IIF(SIGN([LinPack_316186303192733365]) = 1,\"+\",\"\") \r\nWHEN \"AHT - Avg Handle Time\" THEN \"\ud83d\udd51 \" + IIF(SIGN([LinPack_752446998593850135]) = 1,\"+\",\"\") \r\nWHEN \"Answered Calls %\" THEN \"\" + IIF(SIGN([LinPack_864328045918762181]) = 1,\"+\",\"\") \r\nWHEN \"Answered Calls per Agent\" THEN \"\u2714 \" + IIF(SIGN([LinPack_295713812781750679]) = 1,\"+\",\"\") \r\nWHEN \"Avg Talk Time\" THEN \"\ud83d\udd51 \" + IIF(SIGN([LinPack_132874177822996561]) = 1,\"+\",\"\") \r\nWHEN \"Avg Wait Time until Abandon\" THEN \"\ud83d\udd51 \" + IIF(SIGN([LinPack_036382858358103168]) = 1,\"+\",\"\") \r\nWHEN \"Avg Wait Time until Answer\" THEN \"\ud83d\udd51 \" + IIF(SIGN([LinPack_630896387260247844]) = 1,\"+\",\"\") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN \"\" + IIF(SIGN([LinPack_196053506085052138]) = 1,\"+\",\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN \"\u2714 \" + IIF(SIGN([LinPack_659372740899934080]) = 1,\"+\",\"\") \r\nWHEN \"FCR - First Contact Resolution %\" THEN \"\" + IIF(SIGN([LinPack_852776583723808233]) = 1,\"+\",\"\") \r\nWHEN \"Incoming Calls (Daily)\" THEN \"\" + IIF(SIGN([LinPack_564318151870196494]) = 1,\"+\",\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN \"\" + IIF(SIGN([LinPack_459792370854968508]) = 1,\"+\",\"\") \r\nWHEN \"Nb of Agents\" THEN \"\" + IIF(SIGN([LinPack_699243547407035887]) = 1,\"+\",\"\") \r\nWHEN \"Nb of Inquiries\" THEN \"\" + IIF(SIGN([LinPack_944965512313676811]) = 1,\"+\",\"\") \r\nWHEN \"Total Abandoned Calls\" THEN \"\u2718 \" + IIF(SIGN([LinPack_564460243196420958]) = 1,\"+\",\"\") \r\nWHEN \"Total Answered Calls\" THEN \"\u2714 \" + IIF(SIGN([LinPack_786304050298609709]) = 1,\"+\",\"\") \r\nWHEN \"Total Incoming Calls\" THEN \"\" + IIF(SIGN([LinPack_000664932470230911]) = 1,\"+\",\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_SUM([LinPack_935132759855886113])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls (Daily) Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_272277274856956829] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_430729040877461979] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_834841927179404046] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Agents Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_491375674652885502] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_491375674652885502] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_909837884266433392] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_909837884266433392]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_564460243196420958]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_752446998593850135]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls per Agent Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_910718415992399027] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_286995363934004933] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls % Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_035067265839337588] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_709010230291129084] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_586144532240640127] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Inquiries  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_237568999014597603]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] - 1 THEN [Call Date Time] END)} THEN [LinPack_237568999014597603] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Indicator - Display Value",
+      "formula": "CASE [Parameters].[LinPack_443758052154105356] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Inquiries Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_235011027438770187] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_205878400383945519] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_443357360278706391] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls per Agent Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_964324712197175638] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_977616943018370168] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls % Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_333962849657108279] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_634783635400880853] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Filter: Performance Trend",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\"  THEN IF [LinPack_393282580024162863] <= 0 AND [LinPack_393282580024162863] >= -12 THEN \"Y\" ELSE \"N\" END \r\nWHEN \"CM_vs_PY\"  THEN IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] OR [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839]-1 THEN \"Y\" ELSE \"N\" END \r\nWHEN \"ACT_vs_TGT\"  THEN IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] THEN \"Y\" ELSE \"N\" END \r\nWHEN \"CYTD_vs_PYTD\"  THEN IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] OR [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839]-1 THEN \"Y\" ELSE \"N\" END \r\nWHEN \"YTDACT_vs_YTDTGT\"  THEN IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] THEN \"Y\" ELSE \"N\" END \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "CSAT - Customer Satisfaction Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_740043059574320602] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_427681513553799518] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_226369265733247065] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI - Display Value",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_625269797028022992]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] - 1 THEN [Call Date Time] END)} THEN [LinPack_625269797028022992] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Total Answered Calls Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_682489701766206373] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_682489701766206373] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_142725703314881864] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_142725703314881864]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution % Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_607945286581432677] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_576395503042299088] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_309796909996250204] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "CSAT - Customer Satisfaction  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_226369265733247065])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Total Answered Calls  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_SUM([LinPack_536608075492221108])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Indicator - Display Suffix",
+      "formula": "CASE [Parameters].[LinPack_443758052154105356] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\" s\") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\" s\") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"%\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Answer Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_827890797304212400] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_109412272313045764] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_198446409398742853] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_609693926782040631] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_609693926782040631] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_609693926782040631] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_686628653575237958] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_686628653575237958]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI 2",
+      "formula": "CASE [Parameters].[LinPack_218118994975992673] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Reference (for trends)",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_204187189395892754]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_758099770905205018]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_936772163179976540]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_727153324348022430]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_196951673142879184]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_434717602080753820]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_352217474239684975]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_746487687988732850]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_690999365511077029]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_977844377936096564]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_524955350308732604]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_305240910168873364]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_173934786953740689]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_797979266781832100]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_898207717703400033]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_501820890458787184]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_646469890031772894]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_387555499009059797]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Value vs Reference % (for trends)",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_296118259851327749]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_714249390877914079]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_103583668676486639]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_206282270088078667]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_531280714750983283]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_544758668909076947]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_299682682019019406]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_998750938821774351]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_992178940966512424]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_520311942096162945]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_015928523711220092]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_048547164779186201]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_075402970407017235]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_483404205667514101]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_056638298719638148]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_134820116545779940]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_005706815630805301]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_558251910374048577]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Days Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_628731056737408684] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_486514294610959795] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls % Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_152636476942716598] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_770392526569102464] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_405311039304485646] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI - Display Prefix",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\u2718 \") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\u2714 \") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\u2718 \") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Dimension",
+      "formula": "CASE [Parameters].[LinPack_549275837773560533] \r\nWHEN \"Abandon Flag\" THEN [Abandon Flag] \r\nWHEN \"Agent\" THEN [Agent] \r\nWHEN \"Call Reason\" THEN [Call Reason] \r\nWHEN \"Customer\" THEN [Customer] \r\nWHEN \"First Contact Resolution Flag\" THEN [First Contact Resolution Flag] \r\nWHEN \"Inquiry #\" THEN [Inquiry #] \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls (Daily) Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_523232973406014855] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_663801377372260880] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator2 - Display Value",
+      "formula": "CASE [Parameters].[LinPack_743904413952116719] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Answered Calls Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_995528049400633838] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_405379353852598904] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_536608075492221108] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Period: Month Name of Previous Month",
+      "formula": "CASE [Parameters].[LinPack_602727554575955041] \r\nWHEN 2 THEN \"Jan\" \r\nWHEN 3 THEN \"Feb\" \r\nWHEN 4 THEN \"Mar\" \r\nWHEN 5 THEN \"Apr\" \r\nWHEN 6 THEN \"May\" \r\nWHEN 7 THEN \"Jun\" \r\nWHEN 8 THEN \"Jul\" \r\nWHEN 9 THEN \"Aug\" \r\nWHEN 10 THEN \"Sep\" \r\nWHEN 11 THEN \"Oct\" \r\nWHEN 12 THEN \"Nov\" \r\nWHEN 1 THEN \"Dec\" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls per Agent Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_295713812781750679]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution % Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_852776583723808233]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Abandon Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_449117012671706129] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_399991914738963695] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_208646202928768314] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_208646202928768314] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_152593291998320858] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_152593291998320858]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Abandon Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_952349992272793220] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_709127663979731532] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_104257372189636064] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Abandon Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_036382858358103168]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_657866985412451627] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_657866985412451627] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_657866985412451627] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_935132759855886113] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_935132759855886113]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator",
+      "formula": "CASE [Parameters].[LinPack_443758052154105356] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Abandon  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_019708685484162718])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_520313312783491061] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_514435732653129375] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Abandon  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_104257372189636064])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls % Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_653704326822315197] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_653704326822315197] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_646959742154950604] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_646959742154950604]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_526300637101477261] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_526300637101477261] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_887012957945839314] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_887012957945839314]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator2 - Display Prefix",
+      "formula": "CASE [Parameters].[LinPack_743904413952116719] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\u2718 \") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\u2714 \") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\u2718 \") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_355455754750621172] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_889953381380972508] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls per Agent Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_003632147555431539] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_003632147555431539] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_788656235160835870] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_788656235160835870]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Value vs Reference (shape)",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN [LinPack_491525563335070661] \r\nWHEN \"Abandoned Calls per Agent\" THEN [LinPack_478489700809509920] \r\nWHEN \"AHT - Avg Handle Time\" THEN [LinPack_172777149845233356] \r\nWHEN \"Answered Calls %\" THEN [LinPack_067454727551150670] \r\nWHEN \"Answered Calls per Agent\" THEN [LinPack_346959086878227332] \r\nWHEN \"Avg Talk Time\" THEN [LinPack_663563652622036167] \r\nWHEN \"Avg Wait Time until Abandon\" THEN [LinPack_372657339216933763] \r\nWHEN \"Avg Wait Time until Answer\" THEN [LinPack_888639892272408749] \r\nWHEN \"CSAT - Customer Satisfaction\" THEN [LinPack_018279864601064815] \r\nWHEN \"FCR - First Contact Resolution\" THEN [LinPack_112482985651863286] \r\nWHEN \"FCR - First Contact Resolution %\" THEN [LinPack_350102383046555015] \r\nWHEN \"Incoming Calls (Daily)\" THEN [LinPack_690650679800267415] \r\nWHEN \"Incoming Calls per Agent\" THEN [LinPack_560587690303719231] \r\nWHEN \"Nb of Agents\" THEN [LinPack_093287314911141435] \r\nWHEN \"Nb of Inquiries\" THEN [LinPack_085546871646246541] \r\nWHEN \"Total Abandoned Calls\" THEN [LinPack_169817258298705191] \r\nWHEN \"Total Answered Calls\" THEN [LinPack_957380059770213470] \r\nWHEN \"Total Incoming Calls\" THEN [LinPack_688288199428058607] \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls per Agent Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_457228253330940970] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_457228253330940970] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_373094885524251236] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_373094885524251236]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Answered Calls Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_172262427197251473] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_172262427197251473] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_172262427197251473] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_971187656540890206] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_971187656540890206]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_444599554804243973] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_081119230012471970] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_506906063695558162] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Agents Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_463684865585796977] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_463684865585796977] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_463684865585796977] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_947926092118642323] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_947926092118642323]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls per Agent Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_316186303192733365]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls per Agent Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_259860727543958112] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_259860727543958112] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_259860727543958112] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_513182923151209121] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_513182923151209121]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Days  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_654420801199112581]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] - 1 THEN [Call Date Time] END)} THEN [LinPack_654420801199112581] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls % Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_125436670748282766]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI - Display Suffix",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\" s\") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\" s\") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"%\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_500177299829071182] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_500177299829071182] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_500177299829071182] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_264580495338110017] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_264580495338110017]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_204231320389583008] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_100877518140387155] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_SUM([LinPack_911497507659129427])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_587897742959035285] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_587897742959035285] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_085215441103977807] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_085215441103977807]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution % Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_374048420001992149] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_548162247110691125] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls per Agent Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_398791479392184106] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_842400332795651009] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_688956273999413838] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution % Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_357209192846290672] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_357209192846290672] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_540272331903695714] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_540272331903695714]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_941638883661605517])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls per Agent Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_459792370854968508]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Answer  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_198446409398742853])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_855001623271463655] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_855001623271463655] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_557557377197942294] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_557557377197942294]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls % Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_485891574398796084] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_485891574398796084] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_485891574398796084] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_272534003607381610] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_272534003607381610]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution % Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_203551958435528382] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_203551958435528382] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_203551958435528382] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_307054333808531380] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_307054333808531380]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_516429434120143710] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_516429434120143710] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_516429434120143710] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_326117024433215673] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_326117024433215673]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Abandon Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_461099718506802712] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_461099718506802712] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_381693641557511339] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_381693641557511339]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Inquiries Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_326188216663854612] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_326188216663854612] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_326188216663854612] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_651786828092778519] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_651786828092778519]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Answered Calls Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_710134042323073843] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_241765096989843351] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_044027293045031432] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_169315513960475353] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_153107519753729905] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Agents  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_527397981240793979]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] - 1 THEN [Call Date Time] END)} THEN [LinPack_527397981240793979] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_132874177822996561]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator Growth from Previous Period %",
+      "formula": "CASE [Parameters].[LinPack_443758052154105356] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_264786405798288297]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_398685697368415707]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_403628585228045313]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_936728173977444167]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_394383523850453094]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_903866393265267399]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_623978461278583004]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_381985502642079493]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_875258586352216778]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_315750146454285694]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_611839490049582247]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_700458665455159484]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_705176021788725752]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_786171563880153963]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_550588710726311055]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_709052424199442707]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_298067891279266551]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_668018188523411840]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Reference (for trends) - Display Value",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_204187189395892754]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_758099770905205018]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_936772163179976540]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_727153324348022430]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_196951673142879184]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_434717602080753820]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_352217474239684975]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_746487687988732850]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_690999365511077029]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_977844377936096564]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_524955350308732604]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_305240910168873364]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_173934786953740689]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_797979266781832100]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_898207717703400033]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_501820890458787184]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_646469890031772894]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_387555499009059797]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Incoming Calls Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_000664932470230911]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls (Daily) Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_564318151870196494]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "CSAT - Customer Satisfaction Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_077883082511418169] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_233417963125905149] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls per Agent Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_227681565621648050] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_227681565621648050] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_155932627747114346] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_155932627747114346]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls per Agent Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_993485044349218680] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_506512625460938006] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_329653966065044147] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Main Date: Month of Last Date",
+      "formula": "{fixed: max(month( {fixed:max([Call Date Time])}))}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "KPI2 - Display Prefix",
+      "formula": "CASE [Parameters].[LinPack_218118994975992673] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\u2718 \") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\u2714 \") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\u2718 \") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Value vs Reference - Display Value",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_125436670748282766]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_316186303192733365]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_752446998593850135]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_864328045918762181]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_295713812781750679]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_132874177822996561]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_036382858358103168]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_630896387260247844]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_196053506085052138]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_659372740899934080]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_852776583723808233]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_564318151870196494]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_459792370854968508]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_699243547407035887]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_944965512313676811]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_564460243196420958]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_786304050298609709]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_000664932470230911]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls (Daily) Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_760836722016820614] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_760836722016820614] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_588574230301681427] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_588574230301681427]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls % Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_678372875163098721] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_367906596763063244] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Abandon Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_626795158959258995] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_626795158959258995] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_626795158959258995] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_019708685484162718] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_019708685484162718]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "CSAT - Customer Satisfaction Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_877529045379005740] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_877529045379005740] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_877529045379005740] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_240002742364646414] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_240002742364646414]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Days Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_660643398190268593] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_660643398190268593] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_142283753269618833] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_142283753269618833]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator Share of total",
+      "formula": "IF ROUND( WINDOW_SUM([LinPack_380637304461186270] / TOTAL([LinPack_380637304461186270]) ),2) = 1 THEN [LinPack_380637304461186270] / TOTAL( [LinPack_380637304461186270] ) END",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Answer  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_744410561738711801])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Answer Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_657140048897408509] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_560738047555097577] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_783739271069283820] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_783739271069283820] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_783739271069283820] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_941638883661605517] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_941638883661605517]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls per Agent Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_325795814721770794] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_646718654884670759] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Reference - Display Value",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_284681660453277414]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_860768810899395310]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_862196242139025262]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_185693977836595424]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_526853068037767162]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_914756568289354941]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_358638760289719226]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_248978222813317192]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_218207951278073145]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_657078885366963029]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_225184934274586886]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_155023277460721869]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_698310723694505290]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_139348672328959592]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_196034211198341630]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_472863319652033251]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_320453364942097198]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_064484879710467091]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Inquiries  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_237568999014597603]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] THEN [Call Date Time] END)} THEN [LinPack_237568999014597603] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "KPI2 - Display Suffix",
+      "formula": "CASE [Parameters].[LinPack_218118994975992673] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\" s\") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\" s\") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"%\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Period: Period of Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\"  THEN [LinPack_882406252394126043] \r\nWHEN \"CM_vs_PY\"  THEN [LinPack_364405373009653373] \r\nWHEN \"ACT_vs_TGT\"  THEN \"Target \" + [LinPack_472400996286025683] \r\nWHEN \"CYTD_vs_PYTD\"  THEN \"YTD \" + [LinPack_364405373009653373] \r\nWHEN \"YTDACT_vs_YTDTGT\"  THEN \"YTD \" + [LinPack_472400996286025683] + \" Target\" \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Inquiries Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_240817544233372131] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_240817544233372131] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_767840013497117033] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_767840013497117033]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_577310852777993498]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_485594604522964148]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_260000649550622233]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_827947962302995375]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_078279864120629538]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_757529712480138015]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_734804389318521929]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_081936442129680740]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_735351034770573233]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_496467549615515995]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_579369264240449034]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_832076401428736892]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_002119134309336988]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_478169498516735734]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_643538986245403047]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_379496261768073466]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_467641348621202720]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_607350940581116037]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Agents Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_815789633752422216] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_657357453980876434] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_625269797028022992]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] THEN [Call Date Time] END)} THEN [LinPack_625269797028022992] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Period: Period Analyzed (for trends)",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\"  THEN NULL \r\nWHEN \"CM_vs_PY\"  THEN STR([Parameters].[LinPack_878445100977946839]) \r\nWHEN \"ACT_vs_TGT\"  THEN \"Actual \" + STR([Parameters].[LinPack_878445100977946839]) \r\nWHEN \"CYTD_vs_PYTD\"  THEN \"YTD \" + STR([Parameters].[LinPack_878445100977946839]) \r\nWHEN \"YTDACT_vs_YTDTGT\"  THEN \"YTD \" + STR([Parameters].[LinPack_878445100977946839]) + \" Actual\" \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Main Date: Year of Last Date",
+      "formula": "{fixed: max(year( {fixed:max([Call Date Time])}))}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls % Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_337270172858421805] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_337270172858421805] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_337270172858421805] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_220443609765117550] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_220443609765117550]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Incoming Calls (Daily) Perf. -  Value",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_147972099442787213] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_147972099442787213] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_147972099442787213] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_773892209512979554] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_773892209512979554]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "CSAT - Customer Satisfaction Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_675963664466767348] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_675963664466767348] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_370996431055213849] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_370996431055213849]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. -  Value (for trends) - Display Value",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_422950735631163038]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_695017230824750280]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_425273497522222426]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_903509082066077633]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_443353423985781334]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_574816101603033537]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_624275779698495839]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_863928752985433918]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_852073498857891514]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_882592272095736996]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_549197989999938709]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_710115268882164541]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_448304293200583820]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_167110525492715790]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_776790355157256185]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_355331921306822811]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_223867848972725357]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_517260690130730304]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls per Agent Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_721580858004218309] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_686062868636203136] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_508890847388343976] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Period: Period Analyzed",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\"  THEN [LinPack_472400996286025683] \r\nWHEN \"CM_vs_PY\"  THEN [LinPack_472400996286025683] \r\nWHEN \"ACT_vs_TGT\"  THEN [LinPack_472400996286025683] \r\nWHEN \"CYTD_vs_PYTD\"  THEN \"YTD \" + [LinPack_472400996286025683] \r\nWHEN \"YTDACT_vs_YTDTGT\"  THEN \"YTD \" + [LinPack_472400996286025683] \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_703754299913481481] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_934567752016213266] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_541223088292928506] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Answer Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_905545564513088039] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_905545564513088039] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_743102844098585594] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_743102844098585594]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_541223088292928506])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Main Date: Month (Display)",
+      "formula": "CASE MONTH([Call Date Time]) \r\nWHEN 1 THEN \"Jan\" \r\nWHEN 2 THEN \"Feb\" \r\nWHEN 3 THEN \"Mar\" \r\nWHEN 4 THEN \"Apr\" \r\nWHEN 5 THEN \"May\" \r\nWHEN 6 THEN \"Jun\" \r\nWHEN 7 THEN \"Jul\" \r\nWHEN 8 THEN \"Aug\" \r\nWHEN 9 THEN \"Sep\" \r\nWHEN 10 THEN \"Oct\" \r\nWHEN 11 THEN \"Nov\" \r\nWHEN 12 THEN \"Dec\" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_220497253962111152] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_220497253962111152] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_803524314121171560] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_803524314121171560]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_686628653575237958])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Avg Wait Time until Answer Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_630896387260247844]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time  YTD  (Previous Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  RUNNING_AVG([LinPack_577908145202116121])\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Inquiries Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_590939768526530607] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_189344839189979596] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Answered Calls % Perf. -  Value (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_097596957512746381] \r\nWHEN \"ACT_vs_TGT\" THEN  [LinPack_097596957512746381] \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_658680249320449558] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN [LinPack_658680249320449558]  \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator - Display Prefix",
+      "formula": "CASE [Parameters].[LinPack_443758052154105356] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\u2718 \") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\"\ud83d\udd51 \") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\u2714 \") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\u2718 \") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\u2714 \") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Agents  YTD  (Current Year) (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\n  WINDOW_SUM(COUNTD(IF [Call Date Time]={FIXED[LinPack_527397981240793979]:MIN(IF [LinPack_830610800975453241] = [Parameters].[LinPack_878445100977946839] THEN [Call Date Time] END)} THEN [LinPack_527397981240793979] END),FIRST(),0)\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_106810798213386297] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_357382582390605734] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_577908145202116121] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator2 - Display Suffix",
+      "formula": "CASE [Parameters].[LinPack_743904413952116719] \r\nWHEN \"Abandoned Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Abandoned Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"AHT - Avg Handle Time\" THEN ATTR(\" s\") \r\nWHEN \"Answered Calls %\" THEN ATTR(\"%\") \r\nWHEN \"Answered Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Avg Talk Time\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Abandon\" THEN ATTR(\" s\") \r\nWHEN \"Avg Wait Time until Answer\" THEN ATTR(\" s\") \r\nWHEN \"CSAT - Customer Satisfaction\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution\" THEN ATTR(\"\") \r\nWHEN \"FCR - First Contact Resolution %\" THEN ATTR(\"%\") \r\nWHEN \"Incoming Calls (Daily)\" THEN ATTR(\"\") \r\nWHEN \"Incoming Calls per Agent\" THEN ATTR(\"\") \r\nWHEN \"Nb of Agents\" THEN ATTR(\"\") \r\nWHEN \"Nb of Inquiries\" THEN ATTR(\"\") \r\nWHEN \"Total Abandoned Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Answered Calls\" THEN ATTR(\"\") \r\nWHEN \"Total Incoming Calls\" THEN ATTR(\"\") \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Nb of Days Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN [LinPack_524441277005684699] \r\nWHEN \"CM_vs_PY\" THEN [LinPack_284742033784176632] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_331079926559166138] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Indicator 2",
+      "formula": "CASE [Parameters].[LinPack_743904413952116719] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI2 - Display Value",
+      "formula": "CASE [Parameters].[LinPack_218118994975992673] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT(100*[LinPack_335827055104187996]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_009630927253529583]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_843255270213201173]) \r\nWHEN \"Answered Calls %\" THEN FLOAT(100*[LinPack_207904763419516972]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_962644041016337800]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_743705828021242243]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_505404960165432913]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_904144714369898003]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_763442497024700758]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_362810775681053360]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT(100*[LinPack_573745926832137691]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_948507936945783421]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_307854597376727032]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_313027490082100311]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_773831878268017313]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_225784116210437880]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_292867886194385168]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_643653553743082426]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "AHT - Avg Handle Time Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_048753034156840888] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_866466234264984112] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Total Answered Calls Perf. - Value vs Reference (shape)",
+      "formula": "CASE sign([LinPack_786304050298609709]) \r\nWHEN 1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25cf\" \r\n    ELSE \"\u25b2\" \r\n    END \r\nWHEN 0 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \" \" \r\n    ELSE \"\u25ba\" \r\n    END \r\nWHEN -1 THEN \r\n    IF [Parameters].[LinPack_162642609168911135]= \"ACT_vs_TGT\" OR [Parameters].[LinPack_162642609168911135]= \"YTDACT_vs_YTDTGT\" THEN \"\u25a0\" \r\n    ELSE \"\u25bc\" \r\n    END \r\nELSE \" \" \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "FCR - First Contact Resolution Perf. - Reference (for trends)",
+      "formula": "IF ATTR([LinPack_133017178160914243]) <= [Parameters].[LinPack_602727554575955041] THEN \r\nCASE [Parameters].[LinPack_162642609168911135] \r\nWHEN \"CM_vs_PM\" THEN NULL \r\nWHEN \"CM_vs_PY\" THEN [LinPack_607155164433683584] \r\nWHEN \"ACT_vs_TGT\" THEN NULL \r\nWHEN \"CYTD_vs_PYTD\" THEN [LinPack_222068094469706690] \r\nWHEN \"YTDACT_vs_YTDTGT\" THEN NULL \r\nWHEN \"NONE\"  THEN NULL \r\nEND \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. - Reference",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_284681660453277414]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_860768810899395310]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_862196242139025262]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_185693977836595424]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_526853068037767162]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_914756568289354941]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_358638760289719226]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_248978222813317192]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_218207951278073145]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_657078885366963029]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_225184934274586886]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_155023277460721869]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_698310723694505290]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_139348672328959592]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_196034211198341630]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_472863319652033251]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_320453364942097198]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_064484879710467091]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "KPI Perf. -  Value (for trends)",
+      "formula": "CASE [Parameters].[LinPack_298128425497254161] \r\nWHEN \"Abandoned Calls %\" THEN FLOAT([LinPack_422950735631163038]) \r\nWHEN \"Abandoned Calls per Agent\" THEN FLOAT([LinPack_695017230824750280]) \r\nWHEN \"AHT - Avg Handle Time\" THEN FLOAT([LinPack_425273497522222426]) \r\nWHEN \"Answered Calls %\" THEN FLOAT([LinPack_903509082066077633]) \r\nWHEN \"Answered Calls per Agent\" THEN FLOAT([LinPack_443353423985781334]) \r\nWHEN \"Avg Talk Time\" THEN FLOAT([LinPack_574816101603033537]) \r\nWHEN \"Avg Wait Time until Abandon\" THEN FLOAT([LinPack_624275779698495839]) \r\nWHEN \"Avg Wait Time until Answer\" THEN FLOAT([LinPack_863928752985433918]) \r\nWHEN \"CSAT - Customer Satisfaction\" THEN FLOAT([LinPack_852073498857891514]) \r\nWHEN \"FCR - First Contact Resolution\" THEN FLOAT([LinPack_882592272095736996]) \r\nWHEN \"FCR - First Contact Resolution %\" THEN FLOAT([LinPack_549197989999938709]) \r\nWHEN \"Incoming Calls (Daily)\" THEN FLOAT([LinPack_710115268882164541]) \r\nWHEN \"Incoming Calls per Agent\" THEN FLOAT([LinPack_448304293200583820]) \r\nWHEN \"Nb of Agents\" THEN FLOAT([LinPack_167110525492715790]) \r\nWHEN \"Nb of Inquiries\" THEN FLOAT([LinPack_776790355157256185]) \r\nWHEN \"Total Abandoned Calls\" THEN FLOAT([LinPack_355331921306822811]) \r\nWHEN \"Total Answered Calls\" THEN FLOAT([LinPack_223867848972725357]) \r\nWHEN \"Total Incoming Calls\" THEN FLOAT([LinPack_517260690130730304]) \r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max AHT - per agent",
+      "formula": "IF [LinPack_843255270213201173] = WINDOW_MAX([LinPack_843255270213201173]) THEN [LinPack_843255270213201173]\r\nELSEIF [LinPack_843255270213201173] = WINDOW_MIN([LinPack_843255270213201173]) THEN [LinPack_843255270213201173]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max Ave Total Talk Time",
+      "formula": "IF [LinPack_743705828021242243] = WINDOW_MAX([LinPack_743705828021242243]) THEN [LinPack_743705828021242243]\r\nELSEIF [LinPack_743705828021242243] = WINDOW_MIN([LinPack_743705828021242243]) THEN [LinPack_743705828021242243]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max Wait till answer",
+      "formula": "IF [LinPack_904144714369898003] = WINDOW_MAX([LinPack_904144714369898003]) THEN [LinPack_904144714369898003]\r\nELSEIF [LinPack_904144714369898003] = WINDOW_MIN([LinPack_904144714369898003]) THEN [LinPack_904144714369898003]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max CSAT",
+      "formula": "IF [LinPack_763442497024700758] = WINDOW_MAX([LinPack_763442497024700758]) THEN [LinPack_763442497024700758]\r\nELSEIF [LinPack_763442497024700758] = WINDOW_MIN([LinPack_763442497024700758]) THEN [LinPack_763442497024700758]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max Total Abandoned",
+      "formula": "IF [LinPack_225784116210437880] = WINDOW_MAX([LinPack_225784116210437880]) THEN [LinPack_225784116210437880]\r\nELSEIF [LinPack_225784116210437880] = WINDOW_MIN([LinPack_225784116210437880]) THEN [LinPack_225784116210437880]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Min/Max Wait till Abandon",
+      "formula": "IF [LinPack_505404960165432913] = WINDOW_MAX([LinPack_505404960165432913]) THEN [LinPack_505404960165432913]\r\nELSEIF [LinPack_505404960165432913] = WINDOW_MIN([LinPack_505404960165432913]) THEN [LinPack_505404960165432913]\r\nELSE NULL\r\nEND",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Show Customer Metric",
+      "formula": "CASE [Parameters].[Sort Agents (copy)_2505690259435917331]\r\nWHEN \"First Contact Resolution\" THEN [LinPack_579369264240449034]\r\nWHEN \"Average Handle Time\" THEN [LinPack_260000649550622233]\r\nWHEN \"CSAT Score\" THEN [LinPack_735351034770573233]\r\nWHEN \"Total Incoming Calls\" THEN [LinPack_002119134309336988]\r\nWHEN \"Average Wait Till Answer\" THEN [LinPack_081936442129680740]\r\nWHEN \"Average Wait Till Abandon\" THEN [LinPack_734804389318521929]\r\nWHEN \"Total Answered Calls\" THEN [LinPack_078279864120629538]\r\nWHEN \"Average Talk Time\" THEN [LinPack_757529712480138015]\r\nWHEN \"Abandoned Call %\" THEN [LinPack_577310852777993498]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Sort Clients - Customer View ",
+      "formula": "CASE [Parameters].[Sort Agents (copy)_2505690259811799153]\r\nWHEN \"First Contact Resolution\" THEN [LinPack_579369264240449034]\r\nWHEN \"Average Handle Time\" THEN [LinPack_260000649550622233]\r\nWHEN \"CSAT Score\" THEN [LinPack_735351034770573233]\r\nWHEN \"Total Incoming Calls\" THEN [LinPack_607350940581116037]\r\nWHEN \"Average Wait Till Answer\" THEN [LinPack_081936442129680740]\r\nWHEN \"Average Wait Till Abandon\" THEN [LinPack_734804389318521929]\r\nWHEN \"Total Answered Calls\" THEN [LinPack_078279864120629538]\r\nWHEN \"Average Talk Time\" THEN [LinPack_757529712480138015]\r\nWHEN \"Abandoned Call %\" THEN [LinPack_577310852777993498]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "CSAT (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_735351034770573233]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls (for selected Agent) Perf. - Reference",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : ZN([LinPack_472863319652033251])} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Abandoned Calls % (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_577310852777993498]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "AHT (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : ZN([LinPack_260000649550622233])} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Wait Time Until Answer (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] :[LinPack_904144714369898003]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "FCR (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] :[LinPack_573745926832137691]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Total Abandoned Calls (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : ZN([LinPack_379496261768073466])} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Wait Time Until Answer (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_081936442129680740]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Talk Time (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_757529712480138015]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "FCR (for selected Agent) Perf. - Value",
+      "formula": "MAX(IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] : [LinPack_579369264240449034]} END)",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Avg Talk Time (for selected Agent)",
+      "formula": "MAX( IF [Calculation_1647754575248490496] THEN {INCLUDE [Agent] :[LinPack_743705828021242243]} END)",
+      "category": "LOD",
+      "datatype": null
+    }
+  ],
+  "actions": [
+    "dummy HL - talk time / agent 2 (tsc:brush)",
+    "#RWFD Season 2 (unknown)",
+    "dummy hl3 - aht agent 2 (tsc:brush)",
+    "Filter using heatmap (tsc:tsl-filter)",
+    "Filter using reasons (tsc:tsl-filter)",
+    "Filter using clients (tsc:tsl-filter)",
+    "#RWFD Season 2 (unknown)",
+    "#RWFD Season 2 (unknown)",
+    "dummy HL 1 (tsc:brush)"
+  ]
+}

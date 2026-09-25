@@ -1,0 +1,69 @@
+{
+  "source_name": "CustomerSupportCaseDemo",
+  "source_type": "Tableau Public",
+  "dashboards": [
+    "Customer Support Cases"
+  ],
+  "dimensions": "1500x820",
+  "palette": {
+    "canvas_bg": "#EFEFF8",
+    "card_bg": "#FFFFFF",
+    "card_border": "#E2E8F0",
+    "text_primary": "#000000",
+    "text_secondary": "#475569",
+    "accent_primary": "#1CD6E6",
+    "positive_color": "#05AF7F",
+    "negative_color": "#E5592E",
+    "font_family": "Tableau Bold"
+  },
+  "theme_registered": "learned-customersupportcased",
+  "calculations_count": 43,
+  "advanced_calculations": [
+    {
+      "name": "Days open",
+      "formula": "if [Calculation_1900237581220421637]!='Severe' then\r\nROUND(\r\n(DATEDIFF('day',[Order Date],[Ship Date])*0.65) \r\n\r\n ,0)\r\nelse \r\nDATEDIFF('day',[Order Date],[Ship Date])+1\r\nend",
+      "category": "Period/Date",
+      "datatype": null
+    },
+    {
+      "name": "ref",
+      "formula": "{FIXED  [Region] ,[Calculation_1900237581209280512] :max( ({INCLUDE  [Calculation_1900237581220421637],DATETRUNC('month', [Order Date]):   COUNTD([Order ID])}))}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "WINDOW_MAX(COUNTD(Order ID))",
+      "formula": "WINDOW_MAX(COUNTD([Order ID]))",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Last 12 months",
+      "formula": "[Order Date]>\r\nDATEADD('year',-1,\r\n{MAX([Order Date])})",
+      "category": "Period/Date",
+      "datatype": null
+    },
+    {
+      "name": "Last 30 days cases",
+      "formula": "COUNTD(\r\nif [Order Date]>\r\nDATEADD('day',-30,\r\n{MAX([Order Date])}) then [Order ID] end )",
+      "category": "Period/Date",
+      "datatype": null
+    },
+    {
+      "name": "Last 30 days",
+      "formula": "[Order Date]>\r\nDATEADD('day',-30,\r\n{MAX([Order Date])})",
+      "category": "Period/Date",
+      "datatype": null
+    },
+    {
+      "name": "Prior 30 days cases ",
+      "formula": "COUNTD(if [Order Date]<DATEADD('day',-30,{MAX([Order Date])})\r\nand \r\n[Order Date]>DATEADD('day',-60,{MAX([Order Date])})\r\n then [Order ID] end )",
+      "category": "Period/Date",
+      "datatype": null
+    }
+  ],
+  "actions": [
+    "Filter1 (tsc:tsl-filter)",
+    "Filter2 (tsc:tsl-filter)"
+  ]
+}

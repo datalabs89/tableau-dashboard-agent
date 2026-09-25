@@ -1,0 +1,96 @@
+{
+  "source_name": "TableauBootcamp-BuildanEffectiveDashboard",
+  "source_type": "Tableau Public",
+  "dashboards": [
+    "Executive Overview Dashboard"
+  ],
+  "dimensions": "1300x750",
+  "palette": {
+    "canvas_bg": "#FFFFFF",
+    "card_bg": "#FFFFFF",
+    "card_border": "#E2E8F0",
+    "text_primary": "#000000",
+    "text_secondary": "#475569",
+    "accent_primary": "#AAAAFF",
+    "positive_color": "#10B981",
+    "negative_color": "#FF557F",
+    "font_family": "Tableau Regular"
+  },
+  "theme_registered": "learned-tableaubootcamp-buil",
+  "calculations_count": 55,
+  "advanced_calculations": [
+    {
+      "name": "\u2756 - Session Duration",
+      "formula": "CASE [Parameters].[Parameter 1]\r\nWHEN \"Average Session Duration (s)\" THEN \"\u2756\" END",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Metric CY",
+      "formula": "IF [Months (copy)_2712855841805713411] = [Parameters].[Year Parameter] AND [Calculation_2712855841805635586] = [Parameters].[Months Parameter] THEN\r\nCASE [Parameters].[Parameter 1]\r\nWHEN \"Average Session Duration (s)\" THEN [AvgSessionDuration]\r\nWHEN \"Bounce Rate\" THEN [BounceRate]\r\nWHEN \"Conversions\" THEN [Conversions]\r\nWHEN \"New Users\" THEN [NewUsers]\r\nWHEN \"Returning Users\" THEN [ReturningUsers]\r\nWHEN \"Pageviews\" THEN [PageViews]\r\nWHEN \"Unique Pageviews\" THEN [UniquePageViews]\r\nEND\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Selected Dimension",
+      "formula": "CASE [Parameters].[Parameter 2]\r\nWHEN \"Web Pages\" THEN [PagePath]\r\nWHEN \"Key Actions\" THEN [KeyActions]\r\nWHEN \"Country\" THEN [Country]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Metric CY (for trends)",
+      "formula": "IF [Months (copy)_2712855841805713411] = [Parameters].[Year Parameter]\r\n//[Months] <= [Months Parameter] \r\nTHEN\r\nCASE [Parameters].[Parameter 1]\r\nWHEN \"Average Session Duration (s)\" THEN [AvgSessionDuration]\r\nWHEN \"Bounce Rate\" THEN [BounceRate]\r\nWHEN \"Conversions\" THEN [Conversions]\r\nWHEN \"New Users\" THEN [NewUsers]\r\nWHEN \"Returning Users\" THEN [ReturningUsers]\r\nWHEN \"Pageviews\" THEN [PageViews]\r\nWHEN \"Unique Pageviews\" THEN [UniquePageViews]\r\nEND\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Metric PY",
+      "formula": "IF [Months (copy)_2712855841805713411] = [Parameters].[Year Parameter]-1 AND [Calculation_2712855841805635586] = [Parameters].[Months Parameter]  THEN\r\nCASE [Parameters].[Parameter 1]\r\nWHEN \"Average Session Duration (s)\" THEN [AvgSessionDuration]\r\nWHEN \"Bounce Rate\" THEN [BounceRate]\r\nWHEN \"Conversions\" THEN [Conversions]\r\nWHEN \"New Users\" THEN [NewUsers]\r\nWHEN \"Returning Users\" THEN [ReturningUsers]\r\nWHEN \"Pageviews\" THEN [PageViews]\r\nWHEN \"Unique Pageviews\" THEN [UniquePageViews]\r\nEND\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Metric PY (for trends)",
+      "formula": "IF [Months (copy)_2712855841805713411] = [Parameters].[Year Parameter]-1 \r\n//AND [Months] <= [Months Parameter]  \r\nTHEN\r\nCASE [Parameters].[Parameter 1]\r\nWHEN \"Average Session Duration (s)\" THEN [AvgSessionDuration]\r\nWHEN \"Bounce Rate\" THEN [BounceRate]\r\nWHEN \"Conversions\" THEN [Conversions]\r\nWHEN \"New Users\" THEN [NewUsers]\r\nWHEN \"Returning Users\" THEN [ReturningUsers]\r\nWHEN \"Pageviews\" THEN [PageViews]\r\nWHEN \"Unique Pageviews\" THEN [UniquePageViews]\r\nEND\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "\u2756 - Conversions",
+      "formula": "CASE [Parameters].[Parameter 1]\r\n//WHEN \"Average Session Duration (s)\" THEN \"\u2756\" END\r\n//WHEN \"Bounce Rate\" THEN \"\u2756\" END\r\nWHEN \"Conversions\" THEN \"\u2756\" END\r\n//WHEN \"New Users\" THEN \"\u2756\" END\r\n//WHEN \"Returning Users\" THEN \"\u2756\" END\r\n//WHEN \"Pageviews\" THEN \"\u2756\" END\r\n//WHEN \"Unique Pageviews\" THEN \"\u2756\" END",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "\u2756 - Bounce Rate",
+      "formula": "CASE [Parameters].[Parameter 1]\r\n//WHEN \"Average Session Duration (s)\" THEN \"\u2756\" END\r\nWHEN \"Bounce Rate\" THEN \"\u2756\" END\r\n//WHEN \"Conversions\" THEN \"\u2756\" END\r\n//WHEN \"New Users\" THEN \"\u2756\" END\r\n//WHEN \"Returning Users\" THEN \"\u2756\" END\r\n//WHEN \"Pageviews\" THEN \"\u2756\" END\r\n//WHEN \"Unique Pageviews\" THEN \"\u2756\" END",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "\u2756 - Returning Users",
+      "formula": "CASE [Parameters].[Parameter 1]\r\n//WHEN \"Average Session Duration (s)\" THEN \"\u2756\" END\r\n//WHEN \"Bounce Rate\" THEN \"\u2756\" END\r\n//WHEN \"Conversions\" THEN \"\u2756\" END\r\n//WHEN \"New Users\" THEN \"\u2756\" END\r\nWHEN \"Returning Users\" THEN \"\u2756\" END\r\n//WHEN \"Pageviews\" THEN \"\u2756\" END\r\n//WHEN \"Unique Pageviews\" THEN \"\u2756\" END",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "\u2756 - Unique Pageviews",
+      "formula": "CASE [Parameters].[Parameter 1]\r\n//WHEN \"Average Session Duration (s)\" THEN \"\u2756\" END\r\n//WHEN \"Bounce Rate\" THEN \"\u2756\" END\r\n//WHEN \"Conversions\" THEN \"\u2756\" END\r\n//WHEN \"New Users\" THEN \"\u2756\" END\r\n//WHEN \"Returning Users\" THEN \"\u2756\" END\r\n//WHEN \"Pageviews\" THEN \"\u2756\" END\r\nWHEN \"Unique Pageviews\" THEN \"\u2756\" END",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "\u2756 - Pageviews",
+      "formula": "CASE [Parameters].[Parameter 1]\r\n//WHEN \"Average Session Duration (s)\" THEN \"\u2756\" END\r\n//WHEN \"Bounce Rate\" THEN \"\u2756\" END\r\n//WHEN \"Conversions\" THEN \"\u2756\" END\r\n//WHEN \"New Users\" THEN \"\u2756\" END\r\n//WHEN \"Returning Users\" THEN \"\u2756\" END\r\nWHEN \"Pageviews\" THEN \"\u2756\" END\r\n//WHEN \"Unique Pageviews\" THEN \"\u2756\" END",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "\u2756 - New Users",
+      "formula": "CASE [Parameters].[Parameter 1]\r\n//WHEN \"Average Session Duration (s)\" THEN \"\u2756\" END\r\n//WHEN \"Bounce Rate\" THEN \"\u2756\" END\r\n//WHEN \"Conversions\" THEN \"\u2756\" END\r\nWHEN \"New Users\" THEN \"\u2756\" END\r\n//WHEN \"Returning Users\" THEN \"\u2756\" END\r\n//WHEN \"Pageviews\" THEN \"\u2756\" END\r\n//WHEN \"Unique Pageviews\" THEN \"\u2756\" END",
+      "category": "Dynamic Metric",
+      "datatype": null
+    }
+  ],
+  "actions": []
+}

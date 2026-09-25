@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tableau-dashboard-agent"
+version = "0.1.0"
+description = "Autonomous Agent for creating, auditing, and redesigning Tableau dashboards using official schemas and document APIs"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "lxml>=4.9.0",
+    "cwtwb>=0.27.0",
+]
+
+[project.scripts]
+tableau-dashboard-agent = "tableau_dashboard_agent.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

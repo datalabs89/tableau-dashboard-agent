@@ -1,0 +1,42 @@
+{
+  "source_name": "Consumerdutyscorecard",
+  "source_type": "Tableau Public",
+  "dashboards": [
+    "Scorecard"
+  ],
+  "dimensions": "1380x820",
+  "palette": {
+    "canvas_bg": "#F9FAFD",
+    "card_bg": "#FFFFFF",
+    "card_border": "#E2E8F0",
+    "text_primary": "#000000",
+    "text_secondary": "#475569",
+    "accent_primary": "#7F9BFE",
+    "positive_color": "#43CA86",
+    "negative_color": "#EF4444",
+    "font_family": "Tableau Bold"
+  },
+  "theme_registered": "learned-consumerdutyscorecar",
+  "calculations_count": 15,
+  "advanced_calculations": [
+    {
+      "name": "line label",
+      "formula": "if DATETRUNC('month',[Calculation_445293471865778217])\r\n= {fixed DATETRUNC('quarter',[Calculation_445293471865778217]): MIN(DATETRUNC('month',[Calculation_445293471865778217])) }\r\nor [Calculation_445293471540989952] = true\r\n\r\nthen [Calculation_445293471566356494] end",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Order date 2",
+      "formula": "DATEADD('year',3,[Order Date])",
+      "category": "Period/Date",
+      "datatype": null
+    },
+    {
+      "name": "Max month -1",
+      "formula": "[Calculation_445293471865778217]=\r\nDATEADD('year',-1,{MAX([Calculation_445293471865778217])})",
+      "category": "Period/Date",
+      "datatype": null
+    }
+  ],
+  "actions": []
+}

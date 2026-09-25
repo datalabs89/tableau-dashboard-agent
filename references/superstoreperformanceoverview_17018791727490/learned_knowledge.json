@@ -1,0 +1,208 @@
+{
+  "source_name": "SuperstorePerformanceOverview_17018791727490",
+  "source_type": "Tableau Public",
+  "dashboards": [
+    "Order Details",
+    "Overview"
+  ],
+  "dimensions": "1850x1230",
+  "palette": {
+    "canvas_bg": "#FFFFFF",
+    "card_bg": "#FFFFFF",
+    "card_border": "#E2E8F0",
+    "text_primary": "#000000",
+    "text_secondary": "#475569",
+    "accent_primary": "#ABB2F3",
+    "positive_color": "#3A7D3C",
+    "negative_color": "#C63027",
+    "font_family": "Tableau Book"
+  },
+  "theme_registered": "learned-superstoreperformanc",
+  "calculations_count": 128,
+  "advanced_calculations": [
+    {
+      "name": "PY Parameter DNF",
+      "formula": "IF SUM([PY Sales (copy)_1064819864315519014]) < 0 THEN '-' ELSE '' END\r\n+\r\nIF [Parameters].[Top N Selection (copy)_1064819864313110563] < 3 THEN '$' ELSE '' END\r\n+\r\nSTR(INT(ROUND(ABS(SUM([PY Sales (copy)_1064819864315519014]))/POWER(1000, INT(LOG(ROUND(ABS(SUM([PY Sales (copy)_1064819864315519014]))/10, 0)*10, 1000))), 1)))\r\n+\r\nIF (ROUND(ABS(SUM([PY Sales (copy)_1064819864315519014]))/POWER(1000, INT(LOG(ABS(SUM([PY Sales (copy)_1064819864315519014])), 1000))), 1)*10)%10 = 0 THEN ''\r\nELSE '.' + STR((ROUND(ABS(SUM([PY Sales (copy)_1064819864315519014]))/POWER(1000, INT(LOG(ABS(SUM([PY Sales (copy)_1064819864315519014])), 1000))),1)*10)%10)\r\nEND\r\n+\r\nCASE INT(LOG(ROUND(ABS(SUM([PY Sales (copy)_1064819864315519014]))/10,0)*10,1000))\r\nWHEN 1 THEN 'K'\r\nWHEN 2 THEN 'M'\r\nWHEN 3 THEN 'B'\r\nWHEN 4 THEN 'T'\r\nELSE ''\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Top N Selection",
+      "formula": "CASE [Parameters].[Parameter 3]\r\n\r\nWHEN 1 THEN [Customer ID]\r\nWHEN 2 THEN [Manufacturer]\r\nWHEN 3 THEN [Product ID]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Max Bar Color",
+      "formula": "{FIXED [Calculation_1064819864244207623]: SUM([CY Sales (copy)_1064819864314937381])} = {FIXED: MAX({FIXED [Calculation_1064819864244207623]: SUM([CY Sales (copy)_1064819864314937381])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Top N Selection Name",
+      "formula": "CASE [Parameters].[Parameter 3]\r\n\r\nWHEN 1 THEN [Customer Name]\r\nWHEN 2 THEN [Manufacturer]\r\nWHEN 3 THEN [Product Name]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Top N Rank",
+      "formula": "RANK(SUM([CY Sales (copy)_1064819864314937381]), 'desc')",
+      "category": "Table Calc",
+      "datatype": null
+    },
+    {
+      "name": "Parameter Selected",
+      "formula": "CASE [Parameters].[Top N Selection (copy)_1064819864313110563]\r\n\r\nWHEN 1 THEN [Sales]\r\nWHEN 2 THEN [Profit]\r\nWHEN 3 THEN [Quantity]\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Color State Icon",
+      "formula": "IF {FIXED [State/Province]: SUM([CY Sales (copy)_1064819864314937381])} >= 0 THEN '1'\r\nELSEIF {FIXED [State/Province]: SUM([CY Sales (copy)_1064819864314937381])} < 0 THEN '2'\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Profit Ratio",
+      "formula": "{FIXED [Calculation_4694721161135210497], [Order ID], [Order Date], [Customer ID]: SUM([Profit])/SUM([Sales])}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "2022-06-30",
+      "formula": "DATEADD('month', -6,{FIXED : MAX([Order Date])})",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Order-Status-2022-06-30",
+      "formula": "{FIXED [Order ID]: IF MAX([Ship Date]) <= MAX([Calculation_305400374928420886]) THEN \"Complete\" ELSE \"Pending\" END}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Trend Sales",
+      "formula": "{ FIXED MONTH([Order Date]): SUM([Calculation_5371949955380088837])} = {FIXED: MAX({ FIXED MONTH([Order Date]): SUM([Calculation_5371949955380088837])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "CY Parameter DNF",
+      "formula": "IF SUM([CY Sales (copy)_1064819864314937381]) < 0 THEN '-' ELSE '' END\r\n+\r\nIF [Parameters].[Top N Selection (copy)_1064819864313110563] < 3 THEN '$' ELSE '' END\r\n+\r\nSTR(INT(ROUND(ABS(SUM([CY Sales (copy)_1064819864314937381]))/POWER(1000, INT(LOG(ROUND(ABS(SUM([CY Sales (copy)_1064819864314937381]))/10, 0)*10, 1000))), 1)))\r\n+\r\nIF (ROUND(ABS(SUM([CY Sales (copy)_1064819864314937381]))/POWER(1000, INT(LOG(ABS(SUM([CY Sales (copy)_1064819864314937381])), 1000))), 1)*10)%10 = 0 THEN ''\r\nELSE '.' + STR((ROUND(ABS(SUM([CY Sales (copy)_1064819864314937381]))/POWER(1000, INT(LOG(ABS(SUM([CY Sales (copy)_1064819864314937381])), 1000))),1)*10)%10)\r\nEND\r\n+\r\nCASE INT(LOG(ROUND(ABS(SUM([CY Sales (copy)_1064819864314937381]))/10,0)*10,1000))\r\nWHEN 1 THEN 'K'\r\nWHEN 2 THEN 'M'\r\nWHEN 3 THEN 'B'\r\nWHEN 4 THEN 'T'\r\nELSE ''\r\nEND",
+      "category": "Dynamic Metric",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Param Segment",
+      "formula": "{ FIXED [Segment]: SUM([CY Sales (copy)_1064819864314937381])} = {FIXED: MAX({ FIXED [Segment]: SUM([CY Sales (copy)_1064819864314937381])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Max Param Sub-Category",
+      "formula": "IF [Parameters].[Parameter 5] <> 'All' THEN {FIXED [Category]: MAX({ FIXED [Sub-Category]: SUM([CY Sales (copy)_1064819864314937381])})} \r\nELSE {FIXED : MAX({ FIXED [Sub-Category]: SUM([CY Sales (copy)_1064819864314937381])})} END",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Param Category",
+      "formula": "{ FIXED [Category]: SUM([CY Sales (copy)_1064819864314937381])} = {FIXED: MAX({ FIXED [Category]: SUM([CY Sales (copy)_1064819864314937381])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Param Top",
+      "formula": "{ FIXED [Calculation_1064819864244207623]: SUM([CY Sales (copy)_1064819864314937381])} = {FIXED: MAX({ FIXED [Calculation_1064819864244207623]: SUM([CY Sales (copy)_1064819864314937381])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Trend Quantity",
+      "formula": "{ FIXED MONTH([Order Date]): SUM([CY Profit (copy)_1006273070147854347])} = {FIXED: MAX({ FIXED MONTH([Order Date]): SUM([CY Profit (copy)_1006273070147854347])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Trend Ratio",
+      "formula": "{ FIXED MONTH([Order Date]): SUM([CY Sales (copy)_977562619094982657])/SUM([Calculation_5371949955380088837])} = {FIXED: MAX({ FIXED MONTH([Order Date]): SUM([CY Sales (copy)_977562619094982657])/SUM([Calculation_5371949955380088837])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Param Region",
+      "formula": "{ FIXED [Region]: SUM([CY Sales (copy)_1064819864314937381])} = {FIXED: MAX({ FIXED [Region]: SUM([CY Sales (copy)_1064819864314937381])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Color Max Trend Profit",
+      "formula": "{ FIXED MONTH([Order Date]): SUM([CY Sales (copy)_977562619094982657])} = {FIXED: MAX({ FIXED MONTH([Order Date]): SUM([CY Sales (copy)_977562619094982657])})}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Cng by Sub-Category",
+      "formula": "{FIXED  [Sub-Category]: (SUM([CY Sales (copy)_1064819864314937381])-SUM([PY Sales (copy)_1064819864315519014]))/SUM([PY Sales (copy)_1064819864315519014])}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Cng by Sub-Category Neg",
+      "formula": "IF {FIXED [Sub-Category]: SUM([CY Sales (copy)_1064819864314937381])} < {FIXED [Sub-Category]: SUM([PY Sales (copy)_1064819864315519014])} THEN ABS([Parameter by Category Cng (copy)_1207527678155567106]) END",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Cng by Sub-Category Pos",
+      "formula": "IF {FIXED [Sub-Category]: SUM([CY Sales (copy)_1064819864314937381])} >= {FIXED [Sub-Category]: SUM([PY Sales (copy)_1064819864315519014])} THEN ABS([Parameter by Category Cng (copy)_1207527678155567106]) END",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Sub-Category Share",
+      "formula": "{FIXED  [Sub-Category]: SUM([CY Sales (copy)_1064819864314937381])}/{SUM([CY Sales (copy)_1064819864314937381])}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Region Neg",
+      "formula": "IF {FIXED [Region]: SUM([CY Sales (copy)_1064819864314937381])} < 0 THEN [Geometry] END",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Cng by Segment",
+      "formula": "{FIXED  [Segment]: (SUM([CY Sales (copy)_1064819864314937381])-SUM([PY Sales (copy)_1064819864315519014]))/SUM([PY Sales (copy)_1064819864315519014])}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Cng by Region",
+      "formula": "{FIXED  [Region]: (SUM([CY Sales (copy)_1064819864314937381])-SUM([PY Sales (copy)_1064819864315519014]))/SUM([PY Sales (copy)_1064819864315519014])}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Cng by Category",
+      "formula": "{FIXED  [Category]: (SUM([CY Sales (copy)_1064819864314937381])-SUM([PY Sales (copy)_1064819864315519014]))/SUM([PY Sales (copy)_1064819864315519014])}",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Region Pos",
+      "formula": "IF {FIXED [Region]: SUM([CY Sales (copy)_1064819864314937381])} >= 0 THEN [Geometry] END",
+      "category": "LOD",
+      "datatype": null
+    },
+    {
+      "name": "Top N Selection Gantt",
+      "formula": "CASE [Parameters].[Parameter 3]\r\n\r\nWHEN 1 THEN {FIXED: MAX({FIXED [Customer ID]: SUM([CY Sales (copy)_1064819864314937381])})}+{FIXED: MAX({FIXED [Customer ID]: SUM([CY Sales (copy)_1064819864314937381])})}*0.45\r\nWHEN 2 THEN {FIXED: MAX({FIXED [Manufacturer]: SUM([CY Sales (copy)_1064819864314937381])})}+{FIXED: MAX({FIXED [Manufacturer]: SUM([CY Sales (copy)_1064819864314937381])})}*0.45\r\nWHEN 3 THEN {FIXED: MAX({FIXED [Product ID]: SUM([CY Sales (copy)_1064819864314937381])})}+{FIXED: MAX({FIXED [Product ID]: SUM([CY Sales (copy)_1064819864314937381])})}*0.45\r\nEND",
+      "category": "LOD",
+      "datatype": null
+    }
+  ],
+  "actions": [
+    "Un-H Year Buttons (tsc:brush)",
+    "Un-H NavBars (tsc:brush)"
+  ]
+}
