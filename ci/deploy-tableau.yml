@@ -31,4 +31,4 @@ jobs:
           TABLEAU_TOKEN_NAME: ${{ secrets.TABLEAU_TOKEN_NAME }}
           TABLEAU_TOKEN_VALUE: ${{ secrets.TABLEAU_TOKEN_VALUE }}
         run: |
-          python tableau_publish_cloud.py "backup_pre_visionary/Superstore_Ellen_Blackburn_Edition_WORKING.twbx"
+          python tableau_publish_cloud.py "Superstore_Tableau_Visionary_Edition.twbx"
