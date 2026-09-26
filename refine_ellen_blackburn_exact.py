@@ -34,6 +34,76 @@ from tableau_dashboard_agent.actions_manager import ActionsManager
 from tableau_dashboard_agent.schema_validator import TableauSchemaValidator
 
 
+def reorder_datasource_children(ds_el):
+    """Enforce official Tableau Document Schema content model order inside <datasource>:
+    (repository-location?,connection?,utility-dimensions?,dimension*,overridable-settings?,aliases?,column*,column-instance*,group?,mapped-images?,drill-paths?,unlinked-server-hierarchies?,folders-common?,folders-parameters?,actions?,calculated-members?,extract?,layout?,style*,semantic-values?,date-options?,default-date-format?,default-sorts?,field-sort-info?,datasource-dependencies*,explainability?,filter*,object-graph?)
+    """
+    order = [
+        "repository-location", "connection", "utility-dimensions", "dimension",
+        "overridable-settings", "aliases", "column", "column-instance",
+        "group", "mapped-images", "drill-paths", "unlinked-server-hierarchies",
+        "folders-common", "folders-parameters", "actions", "calculated-members",
+        "extract", "layout", "style", "semantic-values", "date-options",
+        "default-date-format", "default-sorts", "field-sort-info",
+        "datasource-dependencies", "explainability", "filter", "object-graph"
+    ]
+    elements = list(ds_el)
+    for el in elements:
+        ds_el.remove(el)
+    def get_order_key(el):
+        tag = el.tag.split("}")[-1]
+        if tag in order:
+            return order.index(tag)
+        return 999
+    elements.sort(key=get_order_key)
+    for el in elements:
+        ds_el.append(el)
+
+
+def ensure_measure_dependencies(ws_el, ds_name, measures):
+    """Ensure that the given measures and their sum column-instances are declared
+    in the worksheet's datasource-dependencies in strict schema order (columns first, then column-instances).
+    """
+    dep = ws_el.find(f".//table/view/datasource-dependencies[@datasource='{ds_name}']")
+    if dep is None:
+        view_el = ws_el.find(".//table/view")
+        if view_el is None:
+            return
+        dep = etree.SubElement(view_el, "datasource-dependencies")
+        dep.set("datasource", ds_name)
+
+    existing_cols = {c.get("name") for c in dep.findall("column")}
+    existing_cis = {ci.get("name") for ci in dep.findall("column-instance")}
+
+    for col_name, dtype in measures:
+        bracketed_col = f"[{col_name}]"
+        if bracketed_col not in existing_cols:
+            c = etree.Element("column")
+            c.set("datatype", dtype)
+            c.set("name", bracketed_col)
+            c.set("role", "measure")
+            c.set("type", "quantitative")
+            dep.append(c)
+
+        ci_name = f"[sum:{col_name}:qk]"
+        if ci_name not in existing_cis:
+            ci = etree.Element("column-instance")
+            ci.set("column", bracketed_col)
+            ci.set("derivation", "Sum")
+            ci.set("name", ci_name)
+            ci.set("pivot", "key")
+            ci.set("type", "quantitative")
+            dep.append(ci)
+
+    cols = [c for c in dep if c.tag.endswith("column")]
+    cis = [c for c in dep if c.tag.endswith("column-instance")]
+    others = [c for c in dep if not c.tag.endswith("column") and not c.tag.endswith("column-instance")]
+    for c in list(dep):
+        dep.remove(c)
+    for c in cols + cis + others:
+        dep.append(c)
+
+
 def refine_ellen_blackburn_exact():
     twb_path = Path(r"C:\Users\User\Documents\Superstore_Modern_Executive_Dashboard.twb")
     excel_path = Path(r"C:\Users\User\Documents\My Tableau Repository\Datasources\2026.2\en_US-US\Sample - Superstore.xlsx")
@@ -88,20 +158,113 @@ def refine_ellen_blackburn_exact():
                 ds_el.insert(layout_idx, new_c)
                 layout_idx += 1
 
+        # Register Pure LOD Dynamic Calculations for BAN Cards
+        dynamic_lod_calcs = [
+            ("Calculation_LATEST_YEAR", "Latest Year", "integer", "dimension", "quantitative", None, "{FIXED : MAX(YEAR([Order Date]))}"),
+            ("Calculation_CY_SALES", "CY Sales", "real", "measure", "quantitative", "c$#,##0;($#,##0)", "IF YEAR([Order Date]) = [Calculation_LATEST_YEAR] THEN [Sales] END"),
+            ("Calculation_PY_SALES", "PY Sales", "real", "measure", "quantitative", "c$#,##0;($#,##0)", "IF YEAR([Order Date]) = [Calculation_LATEST_YEAR] - 1 THEN [Sales] END"),
+            ("Calculation_SALES_YOY_PCT", "Sales YoY Pct", "real", "measure", "quantitative", "p+0.0%;-0.0%", "(ZN(SUM([Calculation_CY_SALES])) - ZN(SUM([Calculation_PY_SALES]))) / ABS(ZN(SUM([Calculation_PY_SALES])))"),
+            ("Calculation_SALES_BADGE_POS", "Sales YoY Badge Pos", "string", "measure", "nominal", None, "IF [Calculation_SALES_YOY_PCT] >= 0 THEN '▲ +' + STR(ROUND([Calculation_SALES_YOY_PCT]*100, 1)) + '% YoY' END"),
+            ("Calculation_SALES_BADGE_NEG", "Sales YoY Badge Neg", "string", "measure", "nominal", None, "IF [Calculation_SALES_YOY_PCT] < 0 THEN '▼ ' + STR(ROUND([Calculation_SALES_YOY_PCT]*100, 1)) + '% YoY' END"),
+            ("Calculation_CY_PROFIT", "CY Profit", "real", "measure", "quantitative", "c$#,##0;($#,##0)", "IF YEAR([Order Date]) = [Calculation_LATEST_YEAR] THEN [Profit] END"),
+            ("Calculation_PY_PROFIT", "PY Profit", "real", "measure", "quantitative", "c$#,##0;($#,##0)", "IF YEAR([Order Date]) = [Calculation_LATEST_YEAR] - 1 THEN [Profit] END"),
+            ("Calculation_PROFIT_YOY_PCT", "Profit YoY Pct", "real", "measure", "quantitative", "p+0.0%;-0.0%", "(ZN(SUM([Calculation_CY_PROFIT])) - ZN(SUM([Calculation_PY_PROFIT]))) / ABS(ZN(SUM([Calculation_PY_PROFIT])))"),
+            ("Calculation_PROFIT_BADGE_POS", "Profit YoY Badge Pos", "string", "measure", "nominal", None, "IF [Calculation_PROFIT_YOY_PCT] >= 0 THEN '▲ +' + STR(ROUND([Calculation_PROFIT_YOY_PCT]*100, 1)) + '% YoY' END"),
+            ("Calculation_PROFIT_BADGE_NEG", "Profit YoY Badge Neg", "string", "measure", "nominal", None, "IF [Calculation_PROFIT_YOY_PCT] < 0 THEN '▼ ' + STR(ROUND([Calculation_PROFIT_YOY_PCT]*100, 1)) + '% YoY' END"),
+            ("Calculation_CY_QUANTITY", "CY Quantity", "integer", "measure", "quantitative", "n#,##0", "IF YEAR([Order Date]) = [Calculation_LATEST_YEAR] THEN [Quantity] END"),
+            ("Calculation_PY_QUANTITY", "PY Quantity", "integer", "measure", "quantitative", "n#,##0", "IF YEAR([Order Date]) = [Calculation_LATEST_YEAR] - 1 THEN [Quantity] END"),
+            ("Calculation_QUANTITY_YOY_PCT", "Quantity YoY Pct", "real", "measure", "quantitative", "p+0.0%;-0.0%", "(ZN(SUM([Calculation_CY_QUANTITY])) - ZN(SUM([Calculation_PY_QUANTITY]))) / ABS(ZN(SUM([Calculation_PY_QUANTITY])))"),
+            ("Calculation_QUANTITY_BADGE_POS", "Quantity YoY Badge Pos", "string", "measure", "nominal", None, "IF [Calculation_QUANTITY_YOY_PCT] >= 0 THEN '▲ +' + STR(ROUND([Calculation_QUANTITY_YOY_PCT]*100, 1)) + '% YoY' END"),
+            ("Calculation_QUANTITY_BADGE_NEG", "Quantity YoY Badge Neg", "string", "measure", "nominal", None, "IF [Calculation_QUANTITY_YOY_PCT] < 0 THEN '▼ ' + STR(ROUND([Calculation_QUANTITY_YOY_PCT]*100, 1)) + '% YoY' END"),
+            ("Calculation_CY_MARGIN", "CY Profit Margin", "real", "measure", "quantitative", "p0.0%", "SUM([Calculation_CY_PROFIT]) / SUM([Calculation_CY_SALES])"),
+            ("Calculation_PY_MARGIN", "PY Profit Margin", "real", "measure", "quantitative", "p0.0%", "SUM([Calculation_PY_PROFIT]) / SUM([Calculation_PY_SALES])"),
+            ("Calculation_MARGIN_DELTA_PTS", "Profit Margin Delta Pts", "real", "measure", "quantitative", None, "[Calculation_CY_MARGIN] - [Calculation_PY_MARGIN]"),
+            ("Calculation_MARGIN_BADGE_POS", "Profit Margin YoY Badge Pos", "string", "measure", "nominal", None, "IF [Calculation_MARGIN_DELTA_PTS] >= 0 THEN '▲ +' + STR(ROUND([Calculation_MARGIN_DELTA_PTS]*100, 1)) + '% pts' END"),
+            ("Calculation_MARGIN_BADGE_NEG", "Profit Margin YoY Badge Neg", "string", "measure", "nominal", None, "IF [Calculation_MARGIN_DELTA_PTS] < 0 THEN '▼ ' + STR(ROUND([Calculation_MARGIN_DELTA_PTS]*100, 1)) + '% pts' END"),
+        ]
+        for cid, cap, dtype, role, stype, fmt, formula in dynamic_lod_calcs:
+            c_existing = ds_el.find(f".//column[@name='[{cid}]']")
+            if c_existing is not None:
+                ds_el.remove(c_existing)
+            col = etree.Element("column")
+            col.set("name", f"[{cid}]")
+            col.set("caption", cap)
+            col.set("datatype", dtype)
+            col.set("role", role)
+            col.set("type", stype)
+            if fmt:
+                col.set("default-format", fmt)
+            calc_el = etree.SubElement(col, "calculation")
+            calc_el.set("class", "tableau")
+            calc_el.set("formula", formula)
+            ds_el.append(col)
+
+        reorder_datasource_children(ds_el)
+
     dyn_metric_field = f"[{ds_name}].[sum:Calculation_968778082F9A40DBBD9D474F40C11342:qk]"
 
     # --- 2. Build 4 Area Sparkline Worksheets for BAN Cards ---
     ws_trend_tpl = root.find(".//worksheets/worksheet[@name='Dynamic_Trend']")
     worksheets_el = root.find("./worksheets")
 
-    sparkline_specs = [
-        ("Sparkline_Sales", f"[{ds_name}].[sum:Sales:qk]", "#3B82F6"),
-        ("Sparkline_Profit", f"[{ds_name}].[sum:Profit:qk]", "#10B981"),
-        ("Sparkline_Quantity", f"[{ds_name}].[sum:Quantity:qk]", "#6366F1"),
-        ("Sparkline_Profit_Ratio", f"[{ds_name}].[usr:Calculation_EA7CB77D5FB54FDCB043D05F221F8967:qk]", "#0EA5E9"),
+    sparkline_configs = [
+        {
+            "name": "Sparkline_Sales",
+            "meas_col": "Sales",
+            "meas_caption": "Sales",
+            "meas_datatype": "real",
+            "meas_role": "measure",
+            "meas_type": "quantitative",
+            "meas_derivation": "Sum",
+            "meas_ci": "[sum:Sales:qk]",
+            "color": "#3B82F6",
+            "label": "REVENUE",
+            "is_calculated": False,
+        },
+        {
+            "name": "Sparkline_Profit",
+            "meas_col": "Profit",
+            "meas_caption": "Profit",
+            "meas_datatype": "real",
+            "meas_role": "measure",
+            "meas_type": "quantitative",
+            "meas_derivation": "Sum",
+            "meas_ci": "[sum:Profit:qk]",
+            "color": "#10B981",
+            "label": "PROFIT",
+            "is_calculated": False,
+        },
+        {
+            "name": "Sparkline_Quantity",
+            "meas_col": "Quantity",
+            "meas_caption": "Quantity",
+            "meas_datatype": "integer",
+            "meas_role": "measure",
+            "meas_type": "quantitative",
+            "meas_derivation": "Sum",
+            "meas_ci": "[sum:Quantity:qk]",
+            "color": "#6366F1",
+            "label": "UNITS",
+            "is_calculated": False,
+        },
+        {
+            "name": "Sparkline_Profit_Ratio",
+            "meas_col": "Calculation_EA7CB77D5FB54FDCB043D05F221F8967",
+            "meas_caption": "Profit Ratio",
+            "meas_datatype": "real",
+            "meas_role": "measure",
+            "meas_type": "quantitative",
+            "meas_derivation": "User",
+            "meas_ci": "[usr:Calculation_EA7CB77D5FB54FDCB043D05F221F8967:qk]",
+            "color": "#0EA5E9",
+            "label": "PROFIT MARGIN",
+            "is_calculated": True,
+            "formula": "SUM([Profit]) / SUM([Sales])",
+        },
     ]
 
-    for s_name, meas_field, color in sparkline_specs:
+    for scfg in sparkline_configs:
+        s_name = scfg["name"]
         old_ws = worksheets_el.find(f"./worksheet[@name='{s_name}']")
         if old_ws is not None:
             worksheets_el.remove(old_ws)
@@ -109,53 +272,225 @@ def refine_ellen_blackburn_exact():
         new_ws = copy.deepcopy(ws_trend_tpl)
         new_ws.set("name", s_name)
 
-        rows_el = new_ws.find(".//table/rows")
-        rows_el.text = meas_field
+        view_el = new_ws.find(".//table/view")
 
+        # 1. Clean datasources list: retain only primary datasource
+        ds_list_el = view_el.find("datasources")
+        if ds_list_el is not None:
+            for child in list(ds_list_el):
+                if child.get("name") != ds_name:
+                    ds_list_el.remove(child)
+
+        # 2. Rebuild datasource-dependencies from scratch (strictly schema-compliant)
+        for dep in list(view_el.findall("datasource-dependencies")):
+            view_el.remove(dep)
+
+        dep_el = etree.Element("datasource-dependencies")
+        dep_el.set("datasource", ds_name)
+
+        # Column declarations (Schema content model: column* must precede column-instance*)
+        if scfg["is_calculated"]:
+            col_calc = etree.SubElement(dep_el, "column")
+            col_calc.set("caption", scfg["meas_caption"])
+            col_calc.set("datatype", scfg["meas_datatype"])
+            col_calc.set("default-format", "p0.0%")
+            col_calc.set("name", f"[{scfg['meas_col']}]")
+            col_calc.set("role", scfg["meas_role"])
+            col_calc.set("type", scfg["meas_type"])
+            calc_sub = etree.SubElement(col_calc, "calculation")
+            calc_sub.set("class", "tableau")
+            calc_sub.set("formula", scfg["formula"])
+
+            col_date = etree.SubElement(dep_el, "column")
+            col_date.set("datatype", "date")
+            col_date.set("name", "[Order Date]")
+            col_date.set("role", "dimension")
+            col_date.set("type", "ordinal")
+
+            col_p = etree.SubElement(dep_el, "column")
+            col_p.set("datatype", "real")
+            col_p.set("name", "[Profit]")
+            col_p.set("role", "measure")
+            col_p.set("type", "quantitative")
+
+            col_s = etree.SubElement(dep_el, "column")
+            col_s.set("datatype", "real")
+            col_s.set("name", "[Sales]")
+            col_s.set("role", "measure")
+            col_s.set("type", "quantitative")
+        else:
+            col_date = etree.SubElement(dep_el, "column")
+            col_date.set("datatype", "date")
+            col_date.set("name", "[Order Date]")
+            col_date.set("role", "dimension")
+            col_date.set("type", "ordinal")
+
+            col_meas = etree.SubElement(dep_el, "column")
+            col_meas.set("datatype", scfg["meas_datatype"])
+            col_meas.set("name", f"[{scfg['meas_col']}]")
+            col_meas.set("role", scfg["meas_role"])
+            col_meas.set("type", scfg["meas_type"])
+
+        # Column instance declarations
+        ci_date = etree.SubElement(dep_el, "column-instance")
+        ci_date.set("column", "[Order Date]")
+        ci_date.set("derivation", "Month")
+        ci_date.set("name", "[mn:Order Date:ok]")
+        ci_date.set("pivot", "key")
+        ci_date.set("type", "ordinal")
+
+        ci_meas = etree.SubElement(dep_el, "column-instance")
+        ci_meas.set("column", f"[{scfg['meas_col']}]")
+        ci_meas.set("derivation", scfg["meas_derivation"])
+        ci_meas.set("name", scfg["meas_ci"])
+        ci_meas.set("pivot", "key")
+        ci_meas.set("type", scfg["meas_type"])
+
+        # Insert datasource-dependencies right after datasources
+        ds_idx = list(view_el).index(ds_list_el) if ds_list_el is not None else 0
+        view_el.insert(ds_idx + 1, dep_el)
+
+        # 3. Shelves Configuration
+        meas_pill = f"[{ds_name}].{scfg['meas_ci']}"
+        date_pill = f"[{ds_name}].[mn:Order Date:ok]"
+
+        rows_el = new_ws.find(".//table/rows")
+        rows_el.text = meas_pill
+
+        cols_el = new_ws.find(".//table/cols")
+        cols_el.text = date_pill
+
+        # 4. Pane Configuration
         pane = new_ws.find(".//panes/pane")
         mark = pane.find("mark")
         if mark is not None:
             mark.set("class", "Area")
 
-        # Micro sparklines remain purely graphical (no tooltips)
+        # Clean Encodings Shelf: only reference this sparkline's measure
+        old_encs = pane.find("encodings")
+        if old_encs is not None:
+            pane.remove(old_encs)
+        encs = etree.SubElement(pane, "encodings")
+        t_el = etree.SubElement(encs, "tooltip")
+        t_el.set("column", meas_pill)
+
+        # Micro Sparkline Tooltip
         old_ct = pane.find("customized-tooltip")
         if old_ct is not None:
             pane.remove(old_ct)
+        ct = etree.SubElement(pane, "customized-tooltip")
+        ct.set("show-buttons", "false")
+        ft = etree.SubElement(ct, "formatted-text")
+        r_m = etree.SubElement(ft, "run")
+        r_m.set("fontcolor", "#64748B")
+        r_m.set("fontname", "Arial")
+        r_m.set("fontsize", "8")
+        r_m.text = "TIMELINE: "
+        r_mv = etree.SubElement(ft, "run")
+        r_mv.set("bold", "true")
+        r_mv.set("fontcolor", "#0F172A")
+        r_mv.set("fontname", "Arial")
+        r_mv.set("fontsize", "9")
+        r_mv.text = f"<[{ds_name}].[mn:Order Date:ok]>\n"
+        r_l = etree.SubElement(ft, "run")
+        r_l.set("fontcolor", "#64748B")
+        r_l.set("fontname", "Arial")
+        r_l.set("fontsize", "8")
+        r_l.text = f"{scfg['label']}: "
+        r_lv = etree.SubElement(ft, "run")
+        r_lv.set("bold", "true")
+        r_lv.set("fontcolor", scfg["color"])
+        r_lv.set("fontname", "Arial")
+        r_lv.set("fontsize", "9")
+        r_lv.text = f"<{meas_pill}>"
 
+        # Style inside Pane
         p_style = pane.find("style")
         if p_style is not None:
-            sr_mark = p_style.find("./style-rule[@element='mark']")
-            if sr_mark is not None:
-                f_col = sr_mark.find("./format[@attr='mark-color']")
-                if f_col is not None:
-                    f_col.set("value", color)
-                f_tr = sr_mark.find("./format[@attr='mark-transparency']")
-                if f_tr is not None:
-                    f_tr.set("value", "90")
-                f_lbl = sr_mark.find("./format[@attr='mark-labels-show']")
-                if f_lbl is not None:
-                    f_lbl.set("value", "false")
+            pane.remove(p_style)
+        p_style = etree.SubElement(pane, "style")
+        sr_mark = etree.SubElement(p_style, "style-rule")
+        sr_mark.set("element", "mark")
+        f_col = etree.SubElement(sr_mark, "format")
+        f_col.set("attr", "mark-color")
+        f_col.set("value", scfg["color"])
+        f_tr = etree.SubElement(sr_mark, "format")
+        f_tr.set("attr", "mark-transparency")
+        f_tr.set("value", "90")
+        f_lbl = etree.SubElement(sr_mark, "format")
+        f_lbl.set("attr", "mark-labels-show")
+        f_lbl.set("value", "false")
+        f_cull = etree.SubElement(sr_mark, "format")
+        f_cull.set("attr", "mark-labels-cull")
+        f_cull.set("value", "true")
 
-        MicroFormatter.clean_chartjunk(new_ws, font_family="Arial", hide_field_labels=True)
+        # 5. Clean Table Style (Zero Chartjunk, No Duplicate Rules)
+        table_el = new_ws.find(".//table")
+        t_style = table_el.find("style")
+        if t_style is not None:
+            table_el.remove(t_style)
+        t_style = etree.SubElement(table_el, "style")
 
-        table_style = new_ws.find(".//table/style")
-        if table_style is not None:
-            sr_ax = etree.SubElement(table_style, "style-rule")
-            sr_ax.set("element", "axis")
-            for sc in ("rows", "cols"):
-                f_d = etree.SubElement(sr_ax, "format")
-                f_d.set("attr", "display")
-                f_d.set("scope", sc)
-                f_d.set("value", "false")
+        sr_tbl = etree.SubElement(t_style, "style-rule")
+        sr_tbl.set("element", "table")
+        f_bg = etree.SubElement(sr_tbl, "format")
+        f_bg.set("attr", "background-color")
+        f_bg.set("value", "#00000000")
+
+        sr_ax = etree.SubElement(t_style, "style-rule")
+        sr_ax.set("element", "axis")
+        for sc in ("rows", "cols"):
+            f_d = etree.SubElement(sr_ax, "format")
+            f_d.set("attr", "display")
+            f_d.set("scope", sc)
+            f_d.set("value", "false")
+        f_ss = etree.SubElement(sr_ax, "format")
+        f_ss.set("attr", "stroke-size")
+        f_ss.set("value", "0")
+        f_lv = etree.SubElement(sr_ax, "format")
+        f_lv.set("attr", "line-visibility")
+        f_lv.set("value", "off")
+
+        for junk_el in ("gridline", "zeroline", "table-div", "refline", "dropline"):
+            sr_j = etree.SubElement(t_style, "style-rule")
+            sr_j.set("element", junk_el)
+            fj1 = etree.SubElement(sr_j, "format")
+            fj1.set("attr", "stroke-size")
+            fj1.set("value", "0")
+            fj2 = etree.SubElement(sr_j, "format")
+            fj2.set("attr", "line-visibility")
+            fj2.set("value", "off")
+
+        sr_ws = etree.SubElement(t_style, "style-rule")
+        sr_ws.set("element", "worksheet")
+        f_dfl = etree.SubElement(sr_ws, "format")
+        f_dfl.set("attr", "display-field-labels")
+        f_dfl.set("value", "false")
+
+        # 6. Reorder children of table: (view, slices?, pagination?, style?, panes?, rows?, cols?)
+        tbl_order = ["view", "slices", "pagination", "style", "panes", "rows", "cols"]
+        t_children = list(table_el)
+        for ch in t_children:
+            table_el.remove(ch)
+        t_children.sort(key=lambda x: tbl_order.index(x.tag) if x.tag in tbl_order else 999)
+        for ch in t_children:
+            table_el.append(ch)
 
         MicroFormatter.reorder_pane_children(pane)
+
+        # 7. Hide Worksheet Title
+        title_el = new_ws.find(".//title")
+        if title_el is not None:
+            title_el.set("formatted-title", "")
+            for c in list(title_el):
+                title_el.remove(c)
 
         sid = new_ws.find("simple-id")
         if sid is not None:
             sid.set("uuid", f"{{{str(uuid.uuid4()).upper()}}}")
 
         worksheets_el.append(new_ws)
-        print(f"Configured Sparkline: {s_name}")
+        print(f"Configured Sparkline: {s_name} -> {meas_pill}")
 
     # --- 3. Update Dashboard Canvas Size & Sizing Mode ---
     db = root.find(".//dashboards/dashboard[@name='Executive_Overview']")
@@ -414,6 +749,9 @@ def refine_ellen_blackburn_exact():
         f_bot = etree.SubElement(zs_bot, "format")
         f_bot.set("attr", "border-style")
         f_bot.set("value", "none")
+        f_bot_p = etree.SubElement(zs_bot, "format")
+        f_bot_p.set("attr", "padding")
+        f_bot_p.set("value", "0")
 
     # --- 3. Middle Analytical Row (Trend & Region) (Height 315px = 38414 / 100000) ---
     z_mid_row = etree.SubElement(z_root, "zone")
@@ -612,40 +950,209 @@ def refine_ellen_blackburn_exact():
         sv2.set("measure-to-sort-by", meas_to_sort)
         sv2.set("shelf", shelf)
 
-    # 6A. Format BAN Text Cards
-    kpi_tooltip_narratives = {
-        "KPI_Sales": ("TOTAL REVENUE", f"<[{ds_name}].[sum:Sales:qk]>", "+12.4% vs Prior Year"),
-        "KPI_Profit": ("NET PROFIT", f"<[{ds_name}].[sum:Profit:qk]>", "+14.2% vs Prior Year"),
-        "KPI_Quantity": ("TOTAL UNITS SOLD", f"<[{ds_name}].[sum:Quantity:qk]>", "+8.1% vs Prior Year"),
-        "KPI_Profit_Ratio": ("PROFIT MARGIN", f"<[{ds_name}].[usr:Calculation_EA7CB77D5FB54FDCB043D05F221F8967:qk]>", "+1.2% pts vs Prior Year"),
-    }
+    # 6A. Format BAN Text Cards with 100% Dynamic Pure LOD Metrics & YoY Badges
+    kpi_configs = [
+        {
+            "name": "KPI_Sales",
+            "title": "TOTAL REVENUE",
+            "val_col": "Calculation_CY_SALES",
+            "val_derivation": "Sum",
+            "val_dtype": "real",
+            "pos_col": "Calculation_SALES_BADGE_POS",
+            "neg_col": "Calculation_SALES_BADGE_NEG",
+        },
+        {
+            "name": "KPI_Profit",
+            "title": "NET PROFIT",
+            "val_col": "Calculation_CY_PROFIT",
+            "val_derivation": "Sum",
+            "val_dtype": "real",
+            "pos_col": "Calculation_PROFIT_BADGE_POS",
+            "neg_col": "Calculation_PROFIT_BADGE_NEG",
+        },
+        {
+            "name": "KPI_Quantity",
+            "title": "TOTAL UNITS SOLD",
+            "val_col": "Calculation_CY_QUANTITY",
+            "val_derivation": "Sum",
+            "val_dtype": "integer",
+            "pos_col": "Calculation_QUANTITY_BADGE_POS",
+            "neg_col": "Calculation_QUANTITY_BADGE_NEG",
+        },
+        {
+            "name": "KPI_Profit_Ratio",
+            "title": "PROFIT MARGIN",
+            "val_col": "Calculation_CY_MARGIN",
+            "val_derivation": "User",
+            "val_dtype": "real",
+            "pos_col": "Calculation_MARGIN_BADGE_POS",
+            "neg_col": "Calculation_MARGIN_BADGE_NEG",
+        },
+    ]
 
-    for k_name, sp_name, k_label, k_val_tag, k_delta in kpi_combos:
+    for kcfg in kpi_configs:
+        k_name = kcfg["name"]
         ws_kpi = root.find(f".//worksheets/worksheet[@name='{k_name}']")
-        if ws_kpi is not None:
-            MicroFormatter.format_ban_card(
-                worksheet_el=ws_kpi,
-                label_title=k_label,
-                value_field_tag=k_val_tag,
-                delta_badge=k_delta,
-                is_positive=True,
-                value_color="#0F172A",
-                label_color="#64748B",
-                font_family="Arial",
-            )
-            MicroFormatter.clean_chartjunk(ws_kpi, font_family="Arial", hide_field_labels=True)
+        if ws_kpi is None:
+            continue
 
-            t_label, t_val, t_growth = kpi_tooltip_narratives[k_name]
-            p_kpi = ws_kpi.find(".//panes/pane")
-            if p_kpi is not None:
-                set_executive_tooltip(p_kpi, [
-                    {"text": "EXECUTIVE KPI: ", "color": "#64748B", "bold": False, "size": 9},
-                    {"text": f"{t_label}\n", "color": "#0F172A", "bold": True, "size": 10},
-                    {"text": "CURRENT VALUE: ", "color": "#64748B", "bold": False, "size": 9},
-                    {"text": f"{t_val}\n", "color": "#2563EB", "bold": True, "size": 11},
-                    {"text": "ANNUAL TRAJECTORY: ", "color": "#64748B", "bold": False, "size": 9},
-                    {"text": f"{t_growth}", "color": "#10B981", "bold": True, "size": 9},
-                ])
+        prefix = "usr" if kcfg["val_derivation"].lower() == "user" else "sum"
+        val_ci_name = f"[{prefix}:{kcfg['val_col']}:qk]"
+        pos_ci_name = f"[usr:{kcfg['pos_col']}:nk]"
+        neg_ci_name = f"[usr:{kcfg['neg_col']}:nk]"
+
+        # Rebuild datasource-dependencies
+        dep = ws_kpi.find(f".//datasource-dependencies[@datasource='{ds_name}']")
+        if dep is None:
+            table_el = ws_kpi.find(".//table")
+            dep = etree.SubElement(table_el, "datasource-dependencies")
+            dep.set("datasource", ds_name)
+        else:
+            for ch in list(dep):
+                dep.remove(ch)
+
+        # 1. Main value column & column-instance
+        c_val = etree.SubElement(dep, "column")
+        c_val.set("name", f"[{kcfg['val_col']}]")
+        c_val.set("datatype", kcfg["val_dtype"])
+        c_val.set("role", "measure")
+        c_val.set("type", "quantitative")
+
+        ci_val = etree.SubElement(dep, "column-instance")
+        ci_val.set("column", f"[{kcfg['val_col']}]")
+        ci_val.set("derivation", kcfg["val_derivation"])
+        ci_val.set("name", val_ci_name)
+        ci_val.set("pivot", "key")
+        ci_val.set("type", "quantitative")
+
+        # 2. Pos badge (Aggregate String -> derivation='User', name='[usr:...:nk]')
+        c_pos = etree.SubElement(dep, "column")
+        c_pos.set("name", f"[{kcfg['pos_col']}]")
+        c_pos.set("datatype", "string")
+        c_pos.set("role", "measure")
+        c_pos.set("type", "nominal")
+
+        ci_pos = etree.SubElement(dep, "column-instance")
+        ci_pos.set("column", f"[{kcfg['pos_col']}]")
+        ci_pos.set("derivation", "User")
+        ci_pos.set("name", pos_ci_name)
+        ci_pos.set("pivot", "key")
+        ci_pos.set("type", "nominal")
+
+        # 3. Neg badge (Aggregate String -> derivation='User', name='[usr:...:nk]')
+        c_neg = etree.SubElement(dep, "column")
+        c_neg.set("name", f"[{kcfg['neg_col']}]")
+        c_neg.set("datatype", "string")
+        c_neg.set("role", "measure")
+        c_neg.set("type", "nominal")
+
+        ci_neg = etree.SubElement(dep, "column-instance")
+        ci_neg.set("column", f"[{kcfg['neg_col']}]")
+        ci_neg.set("derivation", "User")
+        ci_neg.set("name", neg_ci_name)
+        ci_neg.set("pivot", "key")
+        ci_neg.set("type", "nominal")
+
+        # Pane Configuration
+        pane = ws_kpi.find(".//panes/pane")
+        if pane is None:
+            table_el = ws_kpi.find(".//table")
+            panes_el = table_el.find("panes")
+            if panes_el is None:
+                panes_el = etree.SubElement(table_el, "panes")
+            pane = etree.SubElement(panes_el, "pane")
+
+        # Encodings Shelf
+        encs = pane.find("encodings")
+        if encs is None:
+            encs = etree.SubElement(pane, "encodings")
+        else:
+            for ch in list(encs):
+                encs.remove(ch)
+
+        t1 = etree.SubElement(encs, "text")
+        t1.set("column", f"[{ds_name}].{val_ci_name}")
+        t2 = etree.SubElement(encs, "text")
+        t2.set("column", f"[{ds_name}].{pos_ci_name}")
+        t3 = etree.SubElement(encs, "text")
+        t3.set("column", f"[{ds_name}].{neg_ci_name}")
+
+        # Hide worksheet title
+        title_el = ws_kpi.find(".//title")
+        if title_el is not None:
+            title_el.set("formatted-title", "")
+            for c in list(title_el):
+                title_el.remove(c)
+
+        # Customized Label
+        cl = pane.find("customized-label")
+        if cl is not None:
+            pane.remove(cl)
+        cl = etree.SubElement(pane, "customized-label")
+        ft = etree.SubElement(cl, "formatted-text")
+
+        # Run 1: Title
+        r_title = etree.SubElement(ft, "run")
+        r_title.set("bold", "true")
+        r_title.set("fontalignment", "1")
+        r_title.set("fontcolor", "#64748B")
+        r_title.set("fontname", "Arial")
+        r_title.set("fontsize", "8")
+        r_title.text = f"{kcfg['title']}\n"
+
+        # Run 2: Hero Value
+        r_val = etree.SubElement(ft, "run")
+        r_val.set("bold", "true")
+        r_val.set("fontalignment", "1")
+        r_val.set("fontcolor", "#0F172A")
+        r_val.set("fontname", "Arial")
+        r_val.set("fontsize", "22")
+        r_val.text = f"<[{ds_name}].{val_ci_name}>\n"
+
+        # Run 3: Pos Badge (Emerald Green #10B981)
+        r_pos = etree.SubElement(ft, "run")
+        r_pos.set("bold", "true")
+        r_pos.set("fontalignment", "1")
+        r_pos.set("fontcolor", "#10B981")
+        r_pos.set("fontname", "Arial")
+        r_pos.set("fontsize", "9")
+        r_pos.text = f"<[{ds_name}].{pos_ci_name}>"
+
+        # Run 4: Neg Badge (Coral Red #EF4444)
+        r_neg = etree.SubElement(ft, "run")
+        r_neg.set("bold", "true")
+        r_neg.set("fontalignment", "1")
+        r_neg.set("fontcolor", "#EF4444")
+        r_neg.set("fontname", "Arial")
+        r_neg.set("fontsize", "9")
+        r_neg.text = f"<[{ds_name}].{neg_ci_name}>"
+
+        # Tooltip
+        set_executive_tooltip(pane, [
+            {"text": "EXECUTIVE KPI: ", "color": "#64748B", "bold": False, "size": 9},
+            {"text": f"{kcfg['title']}\n", "color": "#0F172A", "bold": True, "size": 10},
+            {"text": "CURRENT VALUE: ", "color": "#64748B", "bold": False, "size": 9},
+            {"text": f"<[{ds_name}].{val_ci_name}>\n", "color": "#2563EB", "bold": True, "size": 11},
+            {"text": "ANNUAL TRAJECTORY: ", "color": "#64748B", "bold": False, "size": 9},
+            {"text": f"<[{ds_name}].{pos_ci_name}><[{ds_name}].{neg_ci_name}> vs Prior Year", "color": "#10B981", "bold": True, "size": 9},
+        ])
+
+        # Center Alignment in cell
+        table_el = ws_kpi.find(".//table")
+        s_el = table_el.find("style")
+        if s_el is None:
+            s_el = etree.SubElement(table_el, "style")
+        sr_cell = etree.SubElement(s_el, "style-rule")
+        sr_cell.set("element", "cell")
+        fa = etree.SubElement(sr_cell, "format")
+        fa.set("attr", "text-align")
+        fa.set("value", "center")
+        fva = etree.SubElement(sr_cell, "format")
+        fva.set("attr", "vertical-align")
+        fva.set("value", "center")
+
+        MicroFormatter.clean_chartjunk(ws_kpi, font_family="Arial", hide_field_labels=True)
+        MicroFormatter.reorder_pane_children(pane)
 
     # 6B. Format Analytical Worksheets with Modern Tech SaaS Electric Cobalt System
     analytical_sheets = ["Dynamic_Trend", "Regional_Breakdown", "Category_Breakdown", "Segment_Sales"]
@@ -665,6 +1172,10 @@ def refine_ellen_blackburn_exact():
 
         styler._style_worksheet(ws)
         MicroFormatter.clean_chartjunk(ws, font_family="Arial", hide_field_labels=True)
+        ensure_measure_dependencies(
+            ws, ds_name,
+            [("Sales", "real"), ("Profit", "real"), ("Quantity", "integer")]
+        )
 
         table_style = ws.find(".//table/style")
         if table_style is not None:
