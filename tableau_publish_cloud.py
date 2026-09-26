@@ -9,11 +9,24 @@ import sys
 from pathlib import Path
 
 
+def load_env():
+    env_file = Path(__file__).parent / ".env"
+    if env_file.exists():
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    if k.strip() not in os.environ:
+                        os.environ[k.strip()] = v.strip()
+
+
 def publish_to_cloud(
     twbx_path: str,
     workbook_name: str = "Superstore_Tableau_Visionary_Edition",
     project_name: str = "default",
 ):
+    load_env()
     try:
         import tableauserverclient as TSC
     except ImportError:
