@@ -1,0 +1,34 @@
+name: Deploy Tableau Dashboard to Cloud
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.twbx'
+      - 'refine_tableau_visionary_edition.py'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install tableauserverclient
+
+      - name: Publish to Tableau Cloud
+        env:
+          TABLEAU_SERVER: ${{ secrets.TABLEAU_SERVER }}
+          TABLEAU_SITE: ${{ secrets.TABLEAU_SITE }}
+          TABLEAU_TOKEN_NAME: ${{ secrets.TABLEAU_TOKEN_NAME }}
+          TABLEAU_TOKEN_VALUE: ${{ secrets.TABLEAU_TOKEN_VALUE }}
+        run: |
+          python tableau_publish_cloud.py "backup_pre_visionary/Superstore_Ellen_Blackburn_Edition_WORKING.twbx"
